@@ -1,0 +1,38 @@
+﻿@model CoinAuction.Models.Login
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section>
+    <div class="wrapper fadeInDown container">
+        <div id="formContent">
+            <form asp-action="Login" asp-controller="Users">
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label"></label>
+                    <input asp-for="Username" class="form-control" />
+                    @if (Model != null && Model.UsernameError != null)
+                    {
+                        <span class="text-danger">@Model.UsernameError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    @if (Model != null && Model.PasswordError != null)
+                    {
+                        <span class="text-danger">@Model.PasswordError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Login" class="btn btn-primary" />
+                </div>
+            </form>
+
+            <div id="formFooter">
+                <a class="underlineHover" href="#">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+</section>
+

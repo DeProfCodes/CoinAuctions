@@ -1,0 +1,99 @@
+﻿@model CoinAuction.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Admin Index";
+}
+
+<h1>Index</h1>
+<div class="col-md-10 offset-1">
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.User.Username)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User.Firstname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User.Lastname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User.Password)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.User.Cellphone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bank.BankName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bank.BranchCode)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bank.AccountType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bank.AccountNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Wallet.TotalCoins)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                var bank = Model.Banks.FirstOrDefault(uid => uid.UserId == user.UserId);
+                var wallet = Model.Wallets.FirstOrDefault(uid => uid.UserId == user.UserId);
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Password)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Cellphone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bank.BankName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bank.BranchCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bank.AccountType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bank.AccountNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => wallet.TotalCoins)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@user.UserId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@user.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@user.UserId">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

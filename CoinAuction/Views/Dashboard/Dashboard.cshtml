@@ -1,0 +1,115 @@
+﻿@model CoinAuction.ViewModels.UserViewModel
+
+<div class="container">
+    <h2>Hello @Model.User.Firstname @Model.User.Lastname</h2>
+    <section id="cards">
+        <div class="row">
+            <div class="column">
+                <div class="card">
+                    <br>
+                    <h5>Coins available in auction</h5>
+                    <br> <br>
+                    <h5 class="text-danger">R500</h5>
+                    <br>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <br>
+                    <h5>Your Available balance</h5>
+                    <br> <br>
+                    <h5>R @Model.Wallet.TotalCoins</h5>
+                    <br>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <br>
+                    <h5>Next Auction Time</h5>
+                    <br> <br>
+                    <h5 class="text-danger">23 hours 5 Min left</h5>
+                    <br>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!------Bids section------>
+    <section id="Bids">
+        <div class="row text-left">
+            <div class="column">
+                <div class="bid">
+                    <br>
+                    <h5>Capitec Bank</h5>
+                    <br> <br>
+                    <h5>500 Coins</h5>
+                    <br>
+                    <form action="/action_page.php">
+                        <label for="fname">Coins required:</label><br>
+                        <input type="text" id="fname" name="fname"><br><br>
+                        <br>
+                        <form action="/action_page.php">
+
+                            <select id="cars" name="cars">
+                                <option value="day3">3 days</option>
+                                <option value="day5">5 days</option>
+
+                            </select>
+                            <input type="submit">
+                        </form>
+                        <br>
+                        </form>
+
+                </div>
+            </div>
+            <div class="column">
+                <div class="bid">
+                    <br>
+                    <h5>Fnb bank</h5>
+                    <br> <br>
+                    <h5>700 Coins</h5>
+                    <br>
+                    <form action="/action_page.php">
+                        <label for="fname">Coins required:</label><br>
+                        <input type="text" id="fname" name="fname"><br><br>
+                        <br>
+                        <form action="/action_page.php">
+
+                            <select id="cars" name="cars">
+                                <option value="day3">3 days</option>
+                                <option value="day5">5 days</option>
+
+                            </select>
+                            <input type="submit">
+                        </form>
+                        <br>
+                        </form>
+                </div>
+            </div>
+            <div class="column">
+                <div class="bid">
+                    <br>
+                    <h5>Capitec bank</h5>
+                    <br> <br>
+                    <h5>2000 coins</h5>
+                    <br>
+                    <form action="/action_page.php">
+                        <label for="fname">Coins required:</label><br>
+                        <input type="text" id="fname" name="fname"><br><br>
+                        <br>
+                        <form action="/action_page.php">
+                            <select id="cars" name="cars">
+                                <option value="day3">3 days</option>
+                                <option value="day5">5 days</option>
+                            </select>
+                            <input type="submit">
+                        </form>
+                        <br>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>

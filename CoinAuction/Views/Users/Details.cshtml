@@ -1,0 +1,89 @@
+﻿@model CoinAuction.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div style="margin-left: 5%">
+    <h1>Details</h1>
+
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Username)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Username)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Firstname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Firstname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Lastname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Lastname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Cellphone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Cellphone)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Bank.BankName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bank.BankName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Bank.BranchCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bank.BranchCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Bank.AccountType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bank.AccountType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Bank.AccountNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bank.AccountNumber)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Wallet.TotalCoins)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Wallet.TotalCoins)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Password)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Password)
+        </dd>
+    </dl>
+    <br/>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.User.UserId">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+

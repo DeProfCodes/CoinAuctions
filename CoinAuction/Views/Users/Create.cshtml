@@ -1,0 +1,84 @@
+﻿@model CoinAuction.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div style="margin-left: 5%">
+    <div class="main-w3layouts wrapper register-body">
+        <h1>Coin Auction Register</h1>
+        <div class="row">
+            <div class="col-md-2">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div  class="form-group">
+                        <input type="text" asp-for="User.Username" placeholder="Username" class="form-control" />
+                        <span asp-validation-for="User.Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="User.Firstname" placeholder="Firstname" class="form-control" />
+                        <span asp-validation-for="User.Firstname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="User.Lastname" placeholder="Lastname" class="form-control" />
+                        <span asp-validation-for="User.Lastname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="User.Email" placeholder="Email" class="form-control" />
+                        <span asp-validation-for="User.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="User.Cellphone" placeholder="Cellphone" class="form-control" />
+                        <span asp-validation-for="User.Cellphone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="Bank.BankName" placeholder="Bank Name" class="form-control" />
+                        <span asp-validation-for="Bank.BankName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="Bank.AccountType" placeholder="Bank Type" class="form-control" />
+                        <span asp-validation-for="Bank.AccountType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="Bank.BranchCode" placeholder="Branch Code" class="form-control" />
+                        <span asp-validation-for="Bank.BranchCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="Bank.AccountNumber" placeholder="Account Number" class="form-control" />
+                        <span asp-validation-for="Bank.AccountNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="User.Password" placeholder="Passowrd" class="form-control" />
+                        <span asp-validation-for="User.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="ConfirmPassowrd" class="form-control" />
+                        <span asp-validation-for="User.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="wthree-text">
+                        <label class="anim">
+                            <input type="checkbox" class="checkbox" required="">
+                            <span>I Agree To The Terms & Conditions</span>
+                        </label>
+                        <div class="clear"> </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Sign Up" class="btn btn-primary" />
+                    </div>
+                </form>
+                <p>Don't have an Account? <a href="#"> Login Now!</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+    @section Scripts
+    {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
