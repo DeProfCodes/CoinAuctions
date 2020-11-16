@@ -103,9 +103,8 @@ img {
 }
 
 /*-- end reset --*/
-.register-body {
-  background: #76b852;
-  /* fallback for old browsers */
+
+  /* fallback for old browsers 
   background: -webkit-linear-gradient(to top, #417AFF, #2E57B8);
   background: -moz-linear-gradient(to top, #417AFF, #2E57B8);
   background: -o-linear-gradient(to top, #417AFF, #2E57B8);
@@ -114,6 +113,7 @@ img {
   background-attachment: fixed;
   font-family: 'Roboto', sans-serif;
 }
+*/
 
 h1 {
   font-size: 3em;
@@ -127,6 +127,14 @@ h1 {
 
 /*-- main --*/
 .main-w3layouts {
+  background: #76b852;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #417AFF, #2E57B8);
+  background: -moz-linear-gradient(to top, #417AFF, #2E57B8);
+  background: -o-linear-gradient(to top, #417AFF, #2E57B8);
+  background: linear-gradient(to top, #417AFF, #2E57B8);
+  background-size: cover;
+  background-attachment: fixed;
   padding: 3em 0 1em;
 }
 
