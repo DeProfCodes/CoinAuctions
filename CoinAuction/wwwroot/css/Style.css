@@ -288,7 +288,7 @@ input[type=text]:focus {
 }
 
 input[type=text]:placeholder {
-  color: #cccccc;
+  color: white;
 }
 
 
