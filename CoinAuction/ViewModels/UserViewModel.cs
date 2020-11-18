@@ -19,5 +19,7 @@ namespace CoinAuction.ViewModels
         public List<Bank> Banks { get; set; }
 
         public List<Wallet> Wallets { get; set; }
+
+        public string NextAuctionTime { get; set; }
     }
 }

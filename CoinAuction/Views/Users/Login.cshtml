@@ -8,11 +8,18 @@
     <h1>Gold Coin Register</h1>
     <div class="main-agileinfo">
         <div class="agileits-top">
-            <form action="#" method="post">
-                <input class="text" type="text" name="Username" placeholder="Username" required="">
+            <form asp-action="Login" asp-controller="Users">
+                <input class="text" type="text" asp-for="Username" placeholder="Username" required="">
+                @if (Model != null && Model.UsernameError != null)
+                {
+                    <span class="text-danger">@Model.UsernameError</span>
+                }
                 <br>
-                <input class="text" type="password" name="password" placeholder="Password" required="">
-
+                <input class="text" type="password" asp-for="Password" placeholder="Password" required="">
+                @if (Model != null && Model.PasswordError != null)
+                {
+                    <span class="text-danger">@Model.PasswordError</span>
+                }
                 <input type="submit" value="Login">
             </form>
             <p>Don't have an Account? <a href="#"> Register Now!</a></p>

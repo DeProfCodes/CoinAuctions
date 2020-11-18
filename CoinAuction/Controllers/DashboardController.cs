@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CoinAuction.Data;
 using CoinAuction.Models;
 using CoinAuction.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,9 +22,10 @@ namespace CoinAuction.Controllers
 
         public IActionResult Dashboard()
         {
-            var userId = TempData["LoggedInUserId"]?.ToString();
+            var userId = HttpContext.Session.GetString("userId");
             var user = _context.Users.FirstOrDefault(u => u.UserId.ToString() == userId);
-            
+            var auction = _context.Auctions.FirstOrDefault();
+
             UserViewModel userVM;
             if (user!=null && user.UserId != 0)
             {
@@ -31,7 +33,8 @@ namespace CoinAuction.Controllers
                 {
                     User = user,
                     Bank = _context.Banks.FirstOrDefault(b => b.UserId == user.UserId),
-                    Wallet = _context.Wallets.FirstOrDefault(w => w.UserId == user.UserId)
+                    Wallet = _context.Wallets.FirstOrDefault(w => w.UserId == user.UserId),
+                    NextAuctionTime = auction.StartTime.ToString()
                 };
                 return View(userVM);
             }
@@ -45,8 +48,9 @@ namespace CoinAuction.Controllers
                     {
                         User = _context.Users.FirstOrDefault(),
                         Bank = _context.Banks.FirstOrDefault(),
-                        Wallet = _context.Wallets.FirstOrDefault()
-                    };
+                        Wallet = _context.Wallets.FirstOrDefault(),
+                        NextAuctionTime = auction.StartTime.ToString()
+                };
                     return View(userVM);
                 }
             }

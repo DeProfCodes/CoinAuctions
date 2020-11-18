@@ -4,14 +4,16 @@ using CoinAuction.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoinAuction.Migrations
 {
     [DbContext(typeof(CoinAuctionContext))]
-    partial class CoinAuctionContextModelSnapshot : ModelSnapshot
+    [Migration("20201118205005_added auction table")]
+    partial class addedauctiontable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,6 +1,6 @@
 ﻿@model CoinAuction.ViewModels.UserViewModel
 
-<div class="container">
+<div class="container" onload="Timer('@Model.NextAuctionTime')">
     <h2>Hello @Model.User.Firstname @Model.User.Lastname</h2>
     <section id="cards">
         <div class="row">
@@ -27,7 +27,7 @@
                     <br>
                     <h5>Next Auction Time</h5>
                     <br> <br>
-                    <h5 class="text-danger">23 hours 5 Min left</h5>
+                    <h5 class="text-danger" id="timer"></h5>
                     <br>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                             <input type="submit">
                         </form>
                         <br>
-                        </form>
+                    </form>
 
                 </div>
             </div>
@@ -84,7 +84,7 @@
                             <input type="submit">
                         </form>
                         <br>
-                        </form>
+                    </form>
                 </div>
             </div>
             <div class="column">

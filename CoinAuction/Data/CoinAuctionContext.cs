@@ -14,9 +14,9 @@ namespace CoinAuction.Data
         }
 
         public DbSet<User> Users {get; set;}
-
         public DbSet<Bank> Banks { get; set; }
-
         public DbSet<Wallet> Wallets { get; set; }
+
+        public DbSet<Auction> Auctions { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CoinAuction.Data;
 using CoinAuction.Models;
 using CoinAuction.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace CoinAuction.Controllers
 {
@@ -29,7 +30,14 @@ namespace CoinAuction.Controllers
                 Banks = await _context.Banks.ToListAsync(),
                 Wallets = await _context.Wallets.ToListAsync()
             };
-            return View(usersVM);
+
+            var auctionVM = new AuctionViewModel
+            {
+                UserVM = usersVM,
+                Auctions = await _context.Auctions.ToListAsync()
+            };
+
+            return View(auctionVM);
         }
 
         // GET: Users/Details/5
@@ -80,7 +88,7 @@ namespace CoinAuction.Controllers
             }
             if (ModelState.IsValid)
             {
-                User user = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == login.Username.ToLower());
+                User user = await _context.Users.FirstOrDefaultAsync(u => (u.Username.ToLower() == login.Username.ToLower()) || (u.Email.ToLower() == login.Username.ToLower()));
                 if (user == null)
                 {
                     login.UsernameError = "This username does not exist!";
@@ -96,6 +104,7 @@ namespace CoinAuction.Controllers
                     else
                     {
                         TempData["LoggedInUserId"] = user.UserId;
+                        HttpContext.Session.SetString("userId", user.UserId.ToString());
                         return RedirectToAction("Dashboard", "Dashboard");
                     }
                 }

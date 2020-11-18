@@ -11,47 +11,47 @@
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div>
-                        <input type="text" asp-for="User.Username" placeholder="Username" class="text" />
+                        <input type="text" asp-for="User.Username" placeholder="Username" class="text" required=""/>
                         <span asp-validation-for="User.Username" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="User.Firstname" placeholder="Firstname" class="form-control" />
+                        <input type="text" asp-for="User.Firstname" placeholder="Firstname" class="text" required=""/>
                         <span asp-validation-for="User.Firstname" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="User.Lastname" placeholder="Lastname" class="form-control" />
+                        <input type="text" asp-for="User.Lastname" placeholder="Lastname" class="text" required=""/>
                         <span asp-validation-for="User.Lastname" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="User.Email" placeholder="Email" class="form-control" />
+                        <input type="text" asp-for="User.Email" placeholder="Email" class="text" required=""/>
                         <span asp-validation-for="User.Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="User.Cellphone" placeholder="Cellphone" class="form-control" />
+                        <input type="text" asp-for="User.Cellphone" placeholder="Cellphone" class="text" required=""/>
                         <span asp-validation-for="User.Cellphone" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="Bank.BankName" placeholder="Bank Name" class="form-control" />
+                        <input type="text" asp-for="Bank.BankName" placeholder="Bank Name" class="text" required=""/>
                         <span asp-validation-for="Bank.BankName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="Bank.AccountType" placeholder="Bank Type" class="form-control" />
+                        <input type="text" asp-for="Bank.AccountType" placeholder="Bank Type" class="text" required=""/>
                         <span asp-validation-for="Bank.AccountType" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="Bank.BranchCode" placeholder="Branch Code" class="form-control" />
+                        <input type="text" asp-for="Bank.BranchCode" placeholder="Branch Code" class="text" required=""/>
                         <span asp-validation-for="Bank.BranchCode" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="Bank.AccountNumber" placeholder="Account Number" class="form-control" />
+                        <input type="text" asp-for="Bank.AccountNumber" placeholder="Account Number" class="text" required=""/>
                         <span asp-validation-for="Bank.AccountNumber" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="User.Password" placeholder="Passowrd" class="form-control" />
+                        <input type="text" asp-for="User.Password" placeholder="Passowrd" class="text" required=""/>
                         <span asp-validation-for="User.Password" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="text" placeholder="ConfirmPassowrd" class="form-control" />
+                        <input type="text" placeholder="ConfirmPassowrd" class="text" required=""/>
                         <span asp-validation-for="User.Password" class="text-danger"></span>
                     </div>
 
