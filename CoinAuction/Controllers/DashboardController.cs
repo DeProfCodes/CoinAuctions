@@ -14,15 +14,17 @@ namespace CoinAuction.Controllers
     {
         private readonly CoinAuctionContext _context;
         
-        public UserViewModel userVM { get; set; }
-
         public DashboardController(CoinAuctionContext context)
         {
             _context = context;
         }
 
-        public IActionResult Dashboard(User user = null)
+        public IActionResult Dashboard()
         {
+            var userId = TempData["LoggedInUserId"]?.ToString();
+            var user = _context.Users.FirstOrDefault(u => u.UserId.ToString() == userId);
+            
+            UserViewModel userVM;
             if (user!=null && user.UserId != 0)
             {
                 userVM = new UserViewModel

@@ -5,26 +5,33 @@
 }
 
 <section>
-    <div class="wrapper fadeInDown">
+    <div class="wrapper fadeInDown container">
         <div id="formContent">
-            <!-- Tabs Titles -->
-            <!-- Icon -->
-            <div class="fadeIn first">
-                <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
-            </div>
-
-            <!-- Login Form -->
-            <form>
-                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-                <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-                <input type="submit" class="fadeIn fourth" value="Log In">
+            <form asp-action="Login" asp-controller="Users">
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label"></label>
+                    <input asp-for="Username" class="form-control" />
+                    @if (Model != null && Model.UsernameError != null)
+                    {
+                        <span class="text-danger">@Model.UsernameError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    @if (Model != null && Model.PasswordError != null)
+                    {
+                        <span class="text-danger">@Model.PasswordError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Login" class="btn btn-primary" />
+                </div>
             </form>
 
-            <!-- Remind Passowrd -->
             <div id="formFooter">
                 <a class="underlineHover" href="#">Forgot Password?</a>
             </div>
-
         </div>
     </div>
 </section>

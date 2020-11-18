@@ -96,7 +96,7 @@ namespace CoinAuction.Controllers
                     else
                     {
                         TempData["LoggedInUserId"] = user.UserId;
-                        return RedirectToAction("Dashboard", "Dashboard", user);
+                        return RedirectToAction("Dashboard", "Dashboard");
                     }
                 }
             }
