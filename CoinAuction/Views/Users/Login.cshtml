@@ -4,34 +4,35 @@
     ViewData["Title"] = "Login";
 }
 
-<section>
-    <div class="wrapper fadeInDown container">
-        <div id="formContent">
-            <form asp-action="Login" asp-controller="Users">
-                <div class="form-group">
-                    <label asp-for="Username" class="control-label"></label>
-                    <input asp-for="Username" class="form-control" />
-                    @if (Model != null && Model.UsernameError != null)
-                    {
-                        <span class="text-danger">@Model.UsernameError</span>
-                    }
-                </div>
-                <div class="form-group">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password" class="form-control" type="password" />
-                    @if (Model != null && Model.PasswordError != null)
-                    {
-                        <span class="text-danger">@Model.PasswordError</span>
-                    }
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Login" class="btn btn-primary" />
-                </div>
-            </form>
+<div class="main-w3layouts wrapper">
+    <h1>Gold Coin Register</h1>
+    <div class="main-agileinfo">
+        <div class="agileits-top">
+            <form action="#" method="post">
+                <input class="text" type="text" name="Username" placeholder="Username" required="">
+                <br>
+                <input class="text" type="password" name="password" placeholder="Password" required="">
 
-            <div id="formFooter">
-                <a class="underlineHover" href="#">Forgot Password?</a>
-            </div>
+                <input type="submit" value="Login">
+            </form>
+            <p>Don't have an Account? <a href="#"> Register Now!</a></p>
         </div>
     </div>
-</section>
+    <!-- copyright -->
+    <div class="colorlibcopy-agile">
+        <p>© 2020 Coin Auction <a href="#" target="_blank">Coin auction</a></p>
+    </div>
+    <!-- //copyright -->
+    <ul class="colorlib-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
