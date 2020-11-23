@@ -105,14 +105,7 @@ namespace CoinAuction.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
-            if (HttpContext.Session.GetString("userId") == null)
-            {
-                HttpContext.Session.SetString("userId", "7");
-                ViewData["userId"] = "7";
-            }
-
             SetSessionValues();
-
             return View(await GetMainViewModel());
         }
 

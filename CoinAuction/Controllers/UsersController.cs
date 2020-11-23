@@ -157,17 +157,29 @@ namespace CoinAuction.Controllers
                 }
 
                 var loadByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == userVM.User.Email);
-                if(loadByEmail != null)
+                if (loadByEmail != null)
                 {
                     userVM.EmailError = "This email already exist!";
                     return View(userVM);
+                }
+
+                if(_context.Users.Count() == 0)
+                {
+                    userVM.User.IsAdmin = true;
+                }
+                else
+                {
+                    userVM.User.IsAdmin = false;
                 }
 
                 _context.Users.Add(userVM.User);
                 await _context.SaveChangesAsync();
 
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Username == userVM.User.Username);
-                
+
+                HttpContext.Session.SetString("userId", user.UserId.ToString());
+                HttpContext.Session.SetString("role", user.IsAdmin ? EnumTypes.Role.Admin.ToString() : EnumTypes.Role.User.ToString());
+
                 userVM.Bank.UserId = user.UserId;
                 Wallet wallet = new Wallet { UserId = user.UserId, TotalCoins = 0 };
 
