@@ -1,45 +1,52 @@
-﻿@model CoinAuction.Models.Auction
+﻿@model CoinAuction.ViewModels.AuctionPostViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Auction";
 }
+<div class="col-md-8 offset-2">
+    <br />
+    <h1>Schedule New Auction</h1>
+    <br />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Auction.StartTime" class="control-label"></label>
+                    <input asp-for="Auction.StartTime" class="form-control" />
+                    <span asp-validation-for="Auction.StartTime" class="text-danger"></span>
+                    @if (Model != null && Model.StartTimeError != null)
+                    {
+                        <span class="text-danger">@Model.StartTimeError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label asp-for="Auction.EndTime" class="control-label"></label>
+                    <input asp-for="Auction.EndTime" class="form-control" />
+                    <span asp-validation-for="Auction.EndTime" class="text-danger"></span>
+                    @if (Model != null && Model.EndTimeError!= null)
+                    {
+                        <span class="text-danger">@Model.EndTimeError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label asp-for="Auction.TotalPoolCoins" class="control-label"></label>
+                    <input asp-for="Auction.TotalPoolCoins" class="form-control" disabled/>
+                    <span asp-validation-for="Auction.TotalPoolCoins" class="text-danger"></span>
+                </div>
+                @*<div class="form-group">
+                    <label asp-for="TotalSoldCoins" class="control-label"></label>
+                    <input asp-for="TotalSoldCoins" class="form-control" />
+                    <span asp-validation-for="TotalSoldCoins" class="text-danger"></span>
+                </div>*@
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Schedule Auction" />
+                </div>
+            </form>
+        </div>
+    </div>
 
-<h1>Create</h1>
-
-<h4>Auction</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndTime" class="control-label"></label>
-                <input asp-for="EndTime" class="form-control" />
-                <span asp-validation-for="EndTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalPoolCoins" class="control-label"></label>
-                <input asp-for="TotalPoolCoins" class="form-control" />
-                <span asp-validation-for="TotalPoolCoins" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalSoldCoins" class="control-label"></label>
-                <input asp-for="TotalSoldCoins" class="form-control" />
-                <span asp-validation-for="TotalSoldCoins" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div>
+        <input type="button" class="btn btn-primary" value="Back" onclick="window.location='@Url.Action("Index", "Auctions")'" />
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

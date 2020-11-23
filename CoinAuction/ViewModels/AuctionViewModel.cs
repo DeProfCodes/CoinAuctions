@@ -11,5 +11,10 @@ namespace CoinAuction.ViewModels
         public UserViewModel UserVM { get; set; }
 
         public List<Auction> Auctions { get; set; }
+
+        public List<UserViewModel> AuctionAccounts { get; set; }
+        public int AuctionCoins { get; set; }
+
+        public List<BidSent> Bidding { get; set; }
     }
 }

@@ -1,16 +1,19 @@
 ﻿@model IEnumerable<CoinAuction.Models.Auction>
+@using CoinAuction.Helpers
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Manage Auctions";
 }
 
-<div class="col-md-8 offset-2">
-    <h1>Index</h1>
-
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-
+<div class="col-md-10 offset-1">
+    <br />
+    <h1>Auctions Management</h1>
+    <br />
+    <div>
+        <input type="button" class="btn btn-success" value="Start Auction Now" onclick="SweetConfirmStartNowAuction()" />
+        <input type="button" class="btn btn-primary" value="Schedule Auction" onclick="window.location='@Url.Action("Create", "Auctions")'" style="margin-left:10%" />
+    </div>
+    <br />
     <table class="table">
         <thead>
             <tr>
@@ -24,34 +27,57 @@
                     @Html.DisplayNameFor(model => model.TotalPoolCoins)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.TotalSoldCoins)
+                    @Html.DisplayNameFor(model => model.Status)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @{
+                var stopAuctionMsg = "This will stop active auction";
+                var startAuctionMsg = "This will start pending auction";
+                var deleteAuctionMsg = "This will delete completed auction";
+            }
+            @foreach (var item in Model.Reverse())
             {
+                var bgColor = EnumTypes.GetBackgroundColorStatus(item.Status);
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.StartTime)
+                        @item.StartTime.ToString("dd/MM/yyyy HH:mm")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.EndTime)
+                        @item.EndTime.ToString("dd/MM/yyyy HH:mm")
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.TotalPoolCoins)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.TotalSoldCoins)
+                        <p class="@bgColor"> @Html.DisplayFor(modelItem => item.Status) </p>
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        @if (item.Status == EnumTypes.AuctionStatus.Active.ToString())
+                        {
+                            <input type="button" class="btn btn-danger" value="Stop Auction" onclick="SweetConfirmAuction('Stop Auction' ,'@stopAuctionMsg' , 'Auctions','StopAuction', '@item.Id')" />
+                        }
+                        else if (item.Status == EnumTypes.AuctionStatus.Pending.ToString())
+                        {
+                            <input type="button" class="btn btn-success" value="Start Now" onclick="SweetConfirmAuction('Start Auction' ,'@startAuctionMsg' , 'Auctions', 'StartAuction', '@item.Id')" />
+                        }
+                        else if (item.Status == EnumTypes.AuctionStatus.Completed.ToString() || item.Status == EnumTypes.AuctionStatus.Stopped.ToString())
+                        {
+                            <input type="button" class="btn btn-secondary" value="Delete" onclick="SweetConfirmAuction(s'Delete Auction' ,'@deleteAuctionMsg', 'Auctions', 'DeleteAuction', '@item.Id')" />
+                        }
+                        @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    <hr />
+    <br />
+    <input type="button" class="btn btn-primary" value="Back" onclick="window.location='@Url.Action("Admin", "Dashboard")'" />
+    <br />
+    <br />
 </div>

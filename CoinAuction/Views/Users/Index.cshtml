@@ -1,58 +1,69 @@
-﻿@model CoinAuction.ViewModels.AuctionViewModel
+﻿@model CoinAuction.ViewModels.UserViewModel
 
 @{
     ViewData["Title"] = "Admin Index";
 }
 
-<h1>Index</h1>
 <div class="col-md-10 offset-1">
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+    <br />
+    <h1>Users Management</h1>
+    <br />
+    <input type="button" class="btn btn-primary" value="Create new user" onclick="window.location='@Url.Action("Create", "Users")'" />
+    <br />
+    <br />
+    @*<form asp-controller="Users" asp-action="Index" method="get">
+            <p>
+                <div class="form-group">
+                    Username: <input type="text" asp-for="FilterString" class="form-control text-dark border-dark" style="background-color:white; width:15%">
+                    <input type="button" class="btn btn-success" value=" Filter " onclick="window.location='@Url.Action("Index", "Users", new { SearchString = Model.FilterString})'" />
+                </div>
+            </p>
+        </form>*@
+    <br />
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.User.Username)
+                    @Html.DisplayNameFor(model => model.User.Username)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.User.Firstname)
+                    @Html.DisplayNameFor(model => model.User.Firstname)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.User.Lastname)
+                    @Html.DisplayNameFor(model => model.User.Lastname)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.User.Email)
+                    @Html.DisplayNameFor(model => model.User.Email)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.User.Password)
+                    @Html.DisplayNameFor(model => model.User.Password)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.User.Cellphone)
+                    @Html.DisplayNameFor(model => model.User.Cellphone)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.Bank.BankName)
+                    @Html.DisplayNameFor(model => model.Bank.BankName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.Bank.BranchCode)
+                    @Html.DisplayNameFor(model => model.Bank.BranchCode)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.Bank.AccountType)
+                    @Html.DisplayNameFor(model => model.Bank.AccountType)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.Bank.AccountNumber)
+                    @Html.DisplayNameFor(model => model.Bank.AccountNumber)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserVM.Wallet.TotalCoins)
+                    @Html.DisplayNameFor(model => model.Wallet.TotalCoins)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model.UserVM.Users)
+            @foreach (var user in Model.Users)
             {
-                var bank = Model.UserVM.Banks.FirstOrDefault(uid => uid.UserId == user.UserId);
-                var wallet = Model.UserVM.Wallets.FirstOrDefault(uid => uid.UserId == user.UserId);
+                var bank = Model.Banks.FirstOrDefault(uid => uid.UserId == user.UserId);
+                var wallet = Model.Wallets.FirstOrDefault(uid => uid.UserId == user.UserId);
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => user.Username)
@@ -88,58 +99,16 @@
                         @Html.DisplayFor(modelItem => wallet.TotalCoins)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@user.UserId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@user.UserId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@user.UserId">Delete</a>
+                        <input type="button" class="btn btn-primary" value="Edit" onclick="window.location='@Url.Action("Edit", "Users", new { id = user.UserId })'" />
+                        <input type="button" class="btn btn-danger" value="Delete" onclick="SweetConfirmAuction('Delete User' ,'This will delete user from system!' , 'Users','Delete', '@user.UserId')" />
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
+    <hr />
+    <br />
+    <input type="button" class="btn btn-primary" value="Back" onclick="window.location='@Url.Action("Admin", "Dashboard")'" />
     <br />
     <br />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Auctions[0].Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Auctions[0].StartTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Auctions[0].EndTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Auctions[0].TotalPoolCoins)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Auctions[0].TotalSoldCoins)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var auction in Model.Auctions)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => auction.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => auction.StartTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => auction.EndTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => auction.TotalPoolCoins)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => auction.TotalSoldCoins)
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>

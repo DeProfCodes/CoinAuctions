@@ -1,0 +1,69 @@
+﻿@model IEnumerable<CoinAuction.Models.Coins>
+@using CoinAuction.Helpers;
+
+@{
+    ViewData["Title"] = "CoinsMaturation";
+}
+
+<div class="col-md-8 offset-2">
+    <h1>CoinsMaturation</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaturationType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaturityDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OpeningCoins)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProfitCoins)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalCoins)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaturityStatus)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @EnumTypes.GetCoinsMaturityTypeString(item.MaturationType)
+                    </td>
+                    <td>
+                        @item.MaturityDate.ToShortDateString()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OpeningCoins)
+                    </td>
+                    <td class="text-success">
+                        +@Html.DisplayFor(modelItem => item.ProfitCoins)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalCoins)
+                    </td>
+                    <td>
+                        <p class="@EnumTypes.GetBackgroundColorStatus(item.MaturityStatus)">@Html.DisplayFor(modelItem => item.MaturityStatus)</p>
+                    </td>
+                    <td>
+                        @if (item.MaturityStatus == EnumTypes.CoinsMaturityStatus.Matured.ToString())
+                        {
+                            <input type="button" class="btn btn-danger" value="Delete" onclick="SweetConfirmAuction('delete record' ,'This will remove this record from list' , 'Dashboard','DeleteCoinMaturation', '@item.Id')" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <input type="button" class="btn btn-primary" value="Back" onclick="window.location='@Url.Action("Dashboard", "Dashboard")'" />
+</div>

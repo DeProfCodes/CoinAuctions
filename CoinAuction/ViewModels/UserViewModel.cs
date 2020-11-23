@@ -21,5 +21,13 @@ namespace CoinAuction.ViewModels
         public List<Wallet> Wallets { get; set; }
 
         public string NextAuctionTime { get; set; }
+        public List<Coins> PendingCoins { get; set; }
+        public int TotalPendingCoins { get; set; }
+        public int TotalCoinsInAuction { get; set; }
+
+        public string FilterString{ get; set; }
+        public string UsernameError { get; set; }
+        public string EmailError { get; set; }
+
     }
 }

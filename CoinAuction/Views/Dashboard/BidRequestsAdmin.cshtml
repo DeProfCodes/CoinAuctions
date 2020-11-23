@@ -1,0 +1,94 @@
+﻿@model IEnumerable<CoinAuction.Models.BidRequest>
+@using CoinAuction.Helpers
+
+@{
+    ViewData["Title"] = "Incoming Bids";
+}
+
+<div class="col-md-8 offset-2">
+    <br />
+    <h1>Bids Requests Management</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidderName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidderCellphone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RecipientName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidCoins)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidStatus)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.BidDate.ToString("dd/MMM/yy HH:mm")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidderName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidderCellphone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RecipientName)
+                    </td>
+                    <td class="@EnumTypes.GetCancelledBidCoinsColor(item.BidStatus)">
+                        @Html.DisplayFor(modelItem => item.BidCoins)
+                    </td>
+                    <td>
+                        @EnumTypes.GetCoinsMaturityTypeString(item.BidType)
+                    </td>
+                    <td>
+                        <p class="@EnumTypes.GetBackgroundColorStatus(item.BidStatus)"> @Html.DisplayFor(modelItem => item.BidStatus) </p>
+                    </td>
+                    <td>
+                        @if (item.BidStatus == EnumTypes.BidRequestStatus.InProgress.ToString())
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" onclick="SweetConfirmCancel(@item.Id, 'Reject', 'RejectBid')" />
+                            <input type="button" class="btn btn-success" value="Approve" onclick="SweetConfirmCancel(@item.Id, 'Approve', 'ApproveBid')" />
+                        }
+                        @if (item.BidStatus == EnumTypes.BidRequestStatus.Approved.ToString())
+                        {
+                            <input type="button" class="btn btn-danger" value="Delete" onclick="SweetConfirmAuction('delete record' ,'This will remove this record from list' , 'Dashboard','DeleteBidRequest', '@item.Id')" />
+                        }
+                    </td>
+                </tr>
+            }
+            @{
+                var total = Model.Where(x => x.BidStatus == EnumTypes.BidRequestStatus.InProgress.ToString()).Sum(x => x.BidCoins);
+            }
+            @if (total != 0)
+            {
+                <tr class="border-dark">
+                    <td colspan="3" class="text-right"><strong>Total In Progress </strong></td>
+                    <td colspan="3" class="text-left"><strong>@total Coins</strong></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <br />
+    <input type="button" class="btn btn-primary" value="Back" onclick="window.location='@Url.Action("Admin", "Dashboard")'" />
+    <br />
+    <br />
+</div>

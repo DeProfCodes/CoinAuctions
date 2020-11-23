@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewData["Title"] = "View";
+}
+
+
+<div class="col-md-8 offset-2">
+    <br />
+    <h1>Admin Page</h1>
+    <hr />
+    <p>
+        Welcome to admin Page. In this page you will have access to override the current system procedures.
+        <br />
+        <h4>Auction Management</h4>
+        You will be able to view auctions that have started, and be able to
+        force start of new auctions ahead of scheduled times, or even stop running auctions or schedule auction to begin at a certain date and time.
+        <br />
+        <br />
+        <h4>User Management</h4>
+        You will also be able to add users to the system. User can be registered as Users or Admin specified by you as a logged in admin User.
+        <br />
+        <br />
+        <h4>Users Coins Management</h4>
+        You will be able to View Coins Maturation status of all users and be able to Mature coins Immediately ahead of time or when system has failed to do so.
+        <br />
+        <br />
+        <h4>Bids Management</h4>
+        You will be able to view All Outgoing Bid Requests between users, and be able to cancel certain bid requests. This is in situation when you have been contacted by a user who
+        struggled doing this operation from his/her side. You will also be able to Approve or Reject Incoming bids to users
+    </p>
+    <br />
+    <table class="table">
+        <tr>
+            <td>Click this button for <strong>Auction Management</strong></td>
+            <td><input type="button" class="btn btn-success" value="Manage Auctions" onclick="window.location='@Url.Action("Index", "Auctions")'" /></td>
+        </tr>
+      
+        <tr>
+            <td>Click this button for <strong>User Management</strong></td>
+            <td><input type="button" class="btn btn-primary" value="Manage Users" onclick="window.location='@Url.Action("Index", "Users")'" /></td>
+        </tr>
+        <tr>
+            <td>Click this button for <strong>User Coins Management</strong></td>
+            <td><input type="button" class="btn btn-info" value="Coins Maturation" onclick="window.location='@Url.Action("CoinsMaturationAdmin", "Dashboard")'" /></td>
+        </tr>
+        <tr>
+            <td>Click this button for <strong>Bids Management</strong></td>
+            <td><input type="button" class="btn btn-warning" value="Manage Bids" onclick="window.location='@Url.Action("BidRequestsAdmin", "Dashboard")'"/></td>
+        </tr>
+    </table>
+</div>

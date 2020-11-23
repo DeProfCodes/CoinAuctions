@@ -4,7 +4,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using CoinAuction.Data;
-using Hangfire;
+using CoinAuction.Tasks;
+using CPMAPortal.Client.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,17 +32,22 @@ namespace CoinAuction
         {
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-            services.AddDbContext<CoinAuctionContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CoinAuctionContext")));
+           //services.AddDbContext<CoinAuctionContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CoinAuctionContext")));
 
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
             services.AddSingleton(provider => GetScheduler());
+
+            services.AddScoped<ISweetAlert, SweetAlert>();
+           //AuctionsTask auction = new AuctionsTask(GetScheduler()); 
+            //auction.RunAuctionJobs();
+           // auction.RunContinuosJobs();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +56,8 @@ namespace CoinAuction
             //new commit
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetRequiredService<CoinAuctionContext>();
+                //var context = serviceScope.ServiceProvider.GetRequiredService<CoinAuctionContext>();
+                var context = new CoinAuctionContext();
                 context.Database.Migrate();
             }
 

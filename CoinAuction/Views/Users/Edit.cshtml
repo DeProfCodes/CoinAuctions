@@ -1,43 +1,47 @@
 ﻿@model CoinAuction.ViewModels.UserViewModel
+@using CoinAuction.Helpers
+@using CoinAuction.ViewModels
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>User</h4>
-<hr />
-<div class="container">
+<div class="col-md-10 offset-1">
+    <br />
+    <h1>Edit User Details</h1>
+    <hr />
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Edit">
+                @{ 
+                    UserViewModel modelVM = Model;
+                }
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="User.UserId" />
                 <div class="form-group">
                     <label asp-for="User.Username" class="control-label"></label>
-                    <input asp-for="User.Username" class="form-control" />
+                    <input asp-for="User.Username" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="User.Username" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="User.Firstname" class="control-label"></label>
-                    <input asp-for="User.Firstname" class="form-control" />
+                    <input asp-for="User.Firstname" class="form-control border-secondary bg-white text-dark"/>
                     <span asp-validation-for="User.Firstname" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="User.Lastname" class="control-label"></label>
-                    <input asp-for="User.Lastname" class="form-control" />
+                    <input asp-for="User.Lastname" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="User.Lastname" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="User.Email" class="control-label"></label>
-                    <input asp-for="User.Email" class="form-control" />
+                    <input asp-for="User.Email" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="User.Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="User.Cellphone" class="control-label"></label>
-                    <input asp-for="User.Cellphone" class="form-control" />
+                    <input asp-for="User.Cellphone" class="form-control border-secondary bg-white text-dark" style="width:95%"/>
                     <span asp-validation-for="User.Cellphone" class="text-danger"></span>
                 </div>
 
@@ -45,22 +49,22 @@
                 <input type="hidden" asp-for="Bank.UserId" />
                 <div class="form-group">
                     <label asp-for="Bank.BankName" class="control-label"></label>
-                    <input type="text" asp-for="Bank.BankName" class="form-control" />
+                    <input type="text" asp-for="Bank.BankName" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="Bank.BankName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Bank.AccountType" class="control-label"></label>
-                    <input type="text" asp-for="Bank.AccountType" class="form-control" />
+                    <input type="text" asp-for="Bank.AccountType" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="Bank.AccountType" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Bank.BranchCode" class="control-label"></label>
-                    <input type="text" asp-for="Bank.BranchCode" class="form-control" />
+                    <input type="text" asp-for="Bank.BranchCode" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="Bank.BranchCode" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Bank.AccountNumber" class="control-label"></label>
-                    <input type="text" asp-for="Bank.AccountNumber" class="form-control" />
+                    <input type="text" asp-for="Bank.AccountNumber" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="Bank.AccountNumber" class="text-danger"></span>
                 </div>
 
@@ -68,16 +72,23 @@
                 <input type="hidden" asp-for="Wallet.UserId" />
                 <div class="form-group">
                     <label asp-for="Wallet.TotalCoins" class="control-label"></label>
-                    <input type="text" asp-for="Wallet.TotalCoins" class="form-control" />
+                    <input type="text" asp-for="Wallet.TotalCoins" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="Wallet.TotalCoins" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="User.Password" class="control-label"></label>
-                    <input asp-for="User.Password" class="form-control" />
+                    <input asp-for="User.Password" class="form-control border-secondary bg-white text-dark" />
                     <span asp-validation-for="User.Password" class="text-danger"></span>
                 </div>
 
+                <div class="form-group">
+                    <label>User Type</label>
+                    <select class="form-control" asp-for="User.IsAdmin" style="width:95%">
+                        <option value=false>@EnumTypes.Role.User.ToString()</option>
+                        <option value=true>@EnumTypes.Role.Admin.ToString()</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <input type="submit" value="Save" class="btn btn-primary" />
                 </div>

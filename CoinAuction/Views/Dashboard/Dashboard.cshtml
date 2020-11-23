@@ -1,24 +1,39 @@
-﻿@model CoinAuction.ViewModels.UserViewModel
+﻿@model CoinAuction.ViewModels.AuctionViewModel
+@using System.Globalization;
+@using CoinAuction.Helpers
 
-<div class="container" onload="Timer('@Model.NextAuctionTime')">
-    <h2>Hello @Model.User.Firstname @Model.User.Lastname</h2>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container" onload="Timer('@Model.UserVM.NextAuctionTime')">
+    <br />
+    <h2 class="text-center">Welcome @Model.UserVM.User.Firstname @Model.UserVM.User.Lastname</h2>
+    <br />
     <section id="cards">
         <div class="row">
             <div class="column">
                 <div class="card">
                     <br>
-                    <h5>Coins available in auction</h5>
-                    <br> <br>
-                    <h5 class="text-danger">R500</h5>
+                    <h5>Your Available balance</h5>
+                    <h5>@Model.UserVM.Wallet.TotalCoins.ToString("C", CultureInfo.CreateSpecificCulture("en-ZA"))</h5>
                     <br>
+                    <h5>Total Coins Pending Maturation </h5>
+                    <h5>@Model.UserVM.TotalPendingCoins.ToString("C", CultureInfo.CreateSpecificCulture("en-ZA"))</h5>
+                    <br />
+                    <input type="button" class="btn btn-info" value="View Coin Maturation" onclick="window.location='@Url.Action("CoinsMaturation", "Dashboard")'" />
+                    <br />
+                    <input type="button" class="btn btn-success" value="View Bid Requests" onclick="window.location='@Url.Action("BidRequests", "Dashboard")'" />
+                    <br />
+                    <input type="button" class="btn btn-warning" value="View Sent Bids" onclick="window.location='@Url.Action("SentBid", "Dashboard")'" />
                 </div>
             </div>
             <div class="column">
                 <div class="card">
                     <br>
-                    <h5>Your Available balance</h5>
+                    <h5>Coins available in auction</h5>
                     <br> <br>
-                    <h5>R @Model.Wallet.TotalCoins</h5>
+                    <h5 class="text-danger">@Model.AuctionCoins.ToString("C", CultureInfo.CreateSpecificCulture("en-ZA")) </h5>
                     <br>
                 </div>
             </div>
@@ -32,57 +47,111 @@
                 </div>
             </div>
         </div>
-
     </section>
+
+    @*<input type="button" id="btnSubmit" value="Submit" />
+    <div class="spinner" style="display:none">
+        <div class="center-div">
+            <div class="inner-div">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>*@
 
     <!------Bids section------>
     <section id="Bids">
-        <div class="row text-left">
-            <div class="column">
+        @{
+            int rows = (int)Math.Ceiling(Model.AuctionAccounts.Count / 4.0);
+            int totalBids = Model.AuctionAccounts.Count;
+            int index = 0;
+        }
+        @if(totalBids == 0)
+        {
+            <h1 class="text-center">Auction has not yet started</h1>
+            <h3>Auctions runs at 09h00 - 10h00 and 17h00 - 18h00</h3>
+        }
+        @for (int r = 0; r < rows; r++)
+        {
+            <div class="row text-left">
+                @for (int c = 0; c < 4; c++)
+                {
+                    BidSent newBid = Model.Bidding[index];
+                    newBid.RecipientName = $"{Model.AuctionAccounts[index].User.Firstname} {Model.AuctionAccounts[index].User.Lastname}";
+                    newBid.Cellphone = Model.AuctionAccounts[index].User.Cellphone;
+                    newBid.UserId = Model.AuctionAccounts[index].User.UserId;
+                    newBid.RequestUsersId = Model.UserVM.User.UserId;
+
+                    newBid.BankName = Model.AuctionAccounts[index].Bank.BankName;
+                    newBid.AccountNumber = Model.AuctionAccounts[index].Bank.AccountNumber;
+                    newBid.AccountType = Model.AuctionAccounts[index].Bank.AccountType;
+                    newBid.BranchCode = Model.AuctionAccounts[index].Bank.BranchCode;
+                    newBid.BidStatus = EnumTypes.BidRequestStatus.InProgress.ToString();
+
+                    var totalCoins = Model.AuctionAccounts[index].Wallet.TotalCoins;
+                    var coinsInAuction = Model.AuctionAccounts[index].TotalCoinsInAuction;
+                    var availableCoins = totalCoins - coinsInAuction;
+                    <div class="column">
+                        <div class="bid">
+                            <br>
+                            <h5>@newBid.BankName</h5>
+                            <br>
+                            <h5>Available Coins: @availableCoins </h5>
+                            <br />
+                            <h5>Coins In Progress: @coinsInAuction</h5>
+                            <br>
+                            <form asp-action="PlaceBid" onsubmit="return CoinsLimit('@availableCoins')">
+                                <input type="hidden" asp-for="@newBid.UserId" />
+                                <input type="hidden" asp-for="@newBid.RequestUsersId" />
+                                <input type="hidden" asp-for="@newBid.RecipientName" />
+                                <input type="hidden" asp-for="@newBid.Cellphone" />
+                                <input type="hidden" asp-for="@newBid.BankName" />
+                                <input type="hidden" asp-for="@newBid.AccountNumber" />
+                                <input type="hidden" asp-for="@newBid.AccountType" />
+                                <input type="hidden" asp-for="@newBid.BranchCode" />
+                                <input type="hidden" asp-for="@newBid.BidStatus" />
+
+                                <label for="fname">Coins required:</label><br>
+                                <div class="form-group">
+                                    <input type="number" class="form-control bg-white" id="bidCoins" placeholder="enter coins" asp-for="@newBid.BidCoins">
+                                    <span class="text-danger" id="coinsError"></span>
+                                </div>
+                                <select class="form-control" asp-for="@newBid.BidCoinsType">
+                                    <option value="@EnumTypes.CoinsMaturityType.HalfMaturation.ToString()">3 days</option>
+                                    <option value="@EnumTypes.CoinsMaturityType.FullMaturation.ToString()">5 days</option>
+                                </select>
+                                <br />
+                                <input type="submit" class="btn btn-primary" value="Place a bid">
+                                <br>
+                            </form>
+                        </div>
+                    </div>
+                    index++;
+                    totalBids--;
+                    if (totalBids == 0)
+                        break;
+                }
+            </div>
+            <br />
+            if (totalBids == 0)
+                break;
+        }
+    </section>
+    @*<div class="column">
                 <div class="bid">
                     <br>
                     <h5>Capitec Bank</h5>
-                    <br> <br>
+                    <br>
                     <h5>500 Coins</h5>
                     <br>
                     <form action="/action_page.php">
                         <label for="fname">Coins required:</label><br>
-                        <input type="text" id="fname" name="fname"><br><br>
-                        <br>
-                        <form action="/action_page.php">
-
-                            <select id="cars" name="cars">
-                                <option value="day3">3 days</option>
-                                <option value="day5">5 days</option>
-
-                            </select>
-                            <input type="submit">
-                        </form>
-                        <br>
-                    </form>
-
-                </div>
-            </div>
-            <div class="column">
-                <div class="bid">
-                    <br>
-                    <h5>Fnb bank</h5>
-                    <br> <br>
-                    <h5>700 Coins</h5>
-                    <br>
-                    <form action="/action_page.php">
-                        <label for="fname">Coins required:</label><br>
-                        <input type="text" id="fname" name="fname"><br><br>
-                        <br>
-                        <form action="/action_page.php">
-
-                            <select id="cars" name="cars">
-                                <option value="day3">3 days</option>
-                                <option value="day5">5 days</option>
-
-                            </select>
-                            <input type="submit">
-                        </form>
+                        <input type="text" class="form-control bg-white" placeholder="enter coins"><br>
+                        <select class="form-control">
+                            <option value="day3">3 days</option>
+                            <option value="day5">5 days</option>
+                        </select>
+                        <br />
+                        <input type="button" class="btn btn-primary" value="Place a bid">
                         <br>
                     </form>
                 </div>
@@ -90,26 +159,47 @@
             <div class="column">
                 <div class="bid">
                     <br>
-                    <h5>Capitec bank</h5>
-                    <br> <br>
-                    <h5>2000 coins</h5>
+                    <h5>Capitec Bank</h5>
+                    <br>
+                    <h5>500 Coins</h5>
                     <br>
                     <form action="/action_page.php">
                         <label for="fname">Coins required:</label><br>
-                        <input type="text" id="fname" name="fname"><br><br>
+                        <input type="text" class="form-control bg-white" placeholder="enter coins"><br>
+                        <select class="form-control">
+                            <option value="day3">3 days</option>
+                            <option value="day5">5 days</option>
+                        </select>
+                        <br />
+                        <input type="button" class="btn btn-primary" value="Place a bid">
                         <br>
-                        <form action="/action_page.php">
-                            <select id="cars" name="cars">
-                                <option value="day3">3 days</option>
-                                <option value="day5">5 days</option>
-                            </select>
-                            <input type="submit">
-                        </form>
+                    </form>
+                </div>
+            </div>
+            <div class="column">
+                <div class="bid">
+                    <br>
+                    <h5>Capitec Bank</h5>
+                    <br>
+                    <h5>500 Coins</h5>
+                    <br>
+                    <form action="/action_page.php">
+                        <label for="fname">Coins required:</label><br>
+                        <input type="text" class="form-control bg-white" placeholder="enter coins"><br>
+                        <select class="form-control">
+                            <option value="day3">3 days</option>
+                            <option value="day5">5 days</option>
+                        </select>
+                        <br />
+                        <input type="button" class="btn btn-primary" value="Place a bid">
                         <br>
                     </form>
                 </div>
             </div>
 
-        </div>
-    </section>
-</div>
+        </div>*@
+
+    <br />
+    <br />
+    <br />
+    <br />

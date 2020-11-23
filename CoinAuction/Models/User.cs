@@ -19,14 +19,16 @@ namespace CoinAuction.Models
         [Required]
         public string Lastname { get; set; }
 
-        [Required]
-        [DataType(DataType.EmailAddress, ErrorMessage = "Enter a valid email address")]
+        [Required(ErrorMessage = "Email is a Required field.")]
+        [EmailAddress]    
         public string Email { get; set; }
-        
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(5, ErrorMessage = "Minimum password length is 5")]
+
+        [Required]
+        [StringLength(int.MaxValue, MinimumLength = 5, ErrorMessage = "Password length must be greater than or equal 5 characters.")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [DataType(DataType.PhoneNumber)]
         [Required(ErrorMessage = "Mobile no. is required")]
         public string Cellphone { get; set; }
 

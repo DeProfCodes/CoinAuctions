@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoinAuction.Data;
 using CoinAuction.Models;
+using CoinAuction.Helpers;
+using CoinAuction.Tasks;
+using CoinAuction.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace CoinAuction.Controllers
 {
@@ -14,14 +18,21 @@ namespace CoinAuction.Controllers
     {
         private readonly CoinAuctionContext _context;
 
-        public AuctionsController(CoinAuctionContext context)
+        public AuctionsController()
         {
-            _context = context;
+            _context = new CoinAuctionContext();
+        }
+
+        void SetSessionValues()
+        {
+            ViewData["role"] = HttpContext.Session.GetString("role");
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
         }
 
         // GET: Auctions
         public async Task<IActionResult> Index()
         {
+            SetSessionValues();
             return View(await _context.Auctions.ToListAsync());
         }
 
@@ -33,8 +44,7 @@ namespace CoinAuction.Controllers
                 return NotFound();
             }
 
-            var auction = await _context.Auctions
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var auction = await _context.Auctions.FirstOrDefaultAsync(m => m.Id == id);
             if (auction == null)
             {
                 return NotFound();
@@ -46,7 +56,15 @@ namespace CoinAuction.Controllers
         // GET: Auctions/Create
         public IActionResult Create()
         {
-            return View();
+            SetSessionValues();
+            Auction newAuc = new Auction 
+            {
+                StartTime = DateTime.Now.AddHours(1),
+                EndTime = DateTime.Now.AddHours(2),
+                TotalPoolCoins = new AuctionExecution().GetPoolCoins() 
+            };
+            var newAucVm = new AuctionPostViewModel { Auction = newAuc };
+            return View(newAucVm);
         }
 
         // POST: Auctions/Create
@@ -54,20 +72,45 @@ namespace CoinAuction.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,TotalPoolCoins,TotalSoldCoins")] Auction auction)
+        public async Task<IActionResult> Create(AuctionPostViewModel auctionVM)
         {
+            SetSessionValues();
             if (ModelState.IsValid)
             {
-                _context.Add(auction);
+                DateTime start = Convert.ToDateTime(auctionVM.Auction.StartTime);
+                DateTime end = Convert.ToDateTime(auctionVM.Auction.EndTime);
+
+                auctionVM.Auction.TotalPoolCoins = new AuctionExecution().GetPoolCoins();
+                
+                if (end.CompareTo(start) < 0)
+                {
+                    auctionVM.EndTimeError = "End time cannot be earlier than start time";
+                    return View(auctionVM);
+                }
+
+                if (start.CompareTo(DateTime.Now) < 0)
+                {
+                    auctionVM.StartTimeError = "Choose start time later than now!";
+                    return View(auctionVM);
+                }
+
+                if(end.CompareTo(DateTime.Now) < 0)
+                {
+                    auctionVM.EndTimeError = "Choose End time later than now!";
+                    return View(auctionVM);
+                }
+                auctionVM.Auction.Status = EnumTypes.AuctionStatus.Pending.ToString();
+                _context.Add(auctionVM.Auction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(auction);
+            return View(auctionVM.Auction);
         }
 
         // GET: Auctions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            SetSessionValues();
             if (id == null)
             {
                 return NotFound();
@@ -86,8 +129,9 @@ namespace CoinAuction.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,TotalPoolCoins,TotalSoldCoins")] Auction auction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,TotalPoolCoins,TotalSoldCoins, Status")] Auction auction)
         {
+            SetSessionValues();
             if (id != auction.Id)
             {
                 return NotFound();
@@ -119,6 +163,7 @@ namespace CoinAuction.Controllers
         // GET: Auctions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            SetSessionValues();
             if (id == null)
             {
                 return NotFound();
@@ -148,6 +193,40 @@ namespace CoinAuction.Controllers
         private bool AuctionExists(int id)
         {
             return _context.Auctions.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> StopAuction(int id)
+        {
+            var auction = await _context.Auctions.FindAsync(id);
+            auction.Status = EnumTypes.AuctionStatus.Stopped.ToString();
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> StartAuction(int id)
+        {
+            await new AuctionExecution().ActivateAuction(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public  async Task<IActionResult> StartAuctionNow()
+        {
+            var activeAuction = await _context.Auctions.FirstOrDefaultAsync(x => x.Status == EnumTypes.AuctionStatus.Active.ToString());
+            
+            if (activeAuction != null)
+                await StopAuction(activeAuction.Id);
+
+            new AuctionExecution().Run();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> DeleteAuction(int id)
+        {
+            var auction = await _context.Auctions.FindAsync(id);
+            _context.Auctions.Remove(auction);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

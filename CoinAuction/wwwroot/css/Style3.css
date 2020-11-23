@@ -103,20 +103,35 @@ img {
   max-width: 100%;
 }
 
-/*-- end reset --*/
-
-  /* fallback for old browsers 
-  background: -webkit-linear-gradient(to top, #417AFF, #2E57B8);
-  background: -moz-linear-gradient(to top, #417AFF, #2E57B8);
-  background: -o-linear-gradient(to top, #417AFF, #2E57B8);
-  background: linear-gradient(to top, #417AFF, #2E57B8);
-  background-size: cover;
-  background-attachment: fixed;
-  font-family: 'Roboto', sans-serif;
+.center-div 
+{ 
+    width: 300px; 
+    height: 300px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -150px;
+    margin-top: -150px; 
 }
-*/
 
-h1 {
+.spinner { position: fixed; z-index: 999; height: 100%; width: 100%; top: 0; left: 0; background-color: Black; filter: alpha(opacity=60); opacity: 0.6; -moz-opacity: 0.8; }
+.loader { margin: auto; border: 16px solid #f3f3f3; border-radius: 50%; border-top: 16px solid #15a0ec; border-bottom: 16px solid #15a0ec; width: 120px; height: 120px; -webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite; }
+
+.inner-div { background-color: white; border-radius: 15px; margin: auto; padding: 2%; width: 150px; }
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+
+    100% { transform: rotate(360deg); }
+}
+
+.registerHeading {
   font-size: 3em;
   text-align: center;
   color: #fff;

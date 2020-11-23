@@ -32,6 +32,9 @@ namespace CoinAuction.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TotalPoolCoins")
                         .HasColumnType("int");
 
@@ -50,8 +53,9 @@ namespace CoinAuction.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccountNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AccountType")
                         .IsRequired()
@@ -61,8 +65,9 @@ namespace CoinAuction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BranchCode")
-                        .HasColumnType("int");
+                    b.Property<string>("BranchCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -70,6 +75,129 @@ namespace CoinAuction.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Banks");
+                });
+
+            modelBuilder.Entity("CoinAuction.Models.BidRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BidCoins")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BidDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("BidSentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BidStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BidType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BidderCellphone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BidderName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BidsRequest");
+                });
+
+            modelBuilder.Entity("CoinAuction.Models.BidSent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BidCoins")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BidCoinsType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BidDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BidStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cellphone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RequestUsersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BidsSent");
+                });
+
+            modelBuilder.Entity("CoinAuction.Models.Coins", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("MaturationType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("MaturityDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MaturityStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OpeningCoins")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OwnerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfitCoins")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalCoins")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Coins");
                 });
 
             modelBuilder.Entity("CoinAuction.Models.User", b =>
@@ -100,8 +228,8 @@ namespace CoinAuction.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(5)")
-                        .HasMaxLength(5);
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(2147483647);
 
                     b.Property<string>("Username")
                         .IsRequired()

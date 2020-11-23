@@ -1,0 +1,109 @@
+﻿@model IEnumerable<CoinAuction.Models.BidSent>
+@using CoinAuction.Helpers
+
+@{
+    ViewData["Title"] = "Outgoing Bids";
+}
+
+<div class="col-md-10 offset-1">
+    <br />
+    <h1>Outgoing Bids History</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RecipientName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cellphone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BankName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BranchCode)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AccountNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AccountType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidCoins)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidCoinsType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidStatus)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @item.BidDate.ToString("dd/MMM/yy HH:mm")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecipientName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cellphone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BankName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BranchCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountType)
+                </td>
+                <td class="@EnumTypes.GetCancelledBidCoinsColor(item.BidStatus)">
+                    @Html.DisplayFor(modelItem => item.BidCoins)
+                </td>
+                <td>
+                    @EnumTypes.GetCoinsMaturityTypeString(item.BidCoinsType)
+                </td>
+                <td>
+                    <p class="@EnumTypes.GetBackgroundColorStatus(item.BidStatus)"> @Html.DisplayFor(modelItem => item.BidStatus)</p>
+                </td>
+                <td>
+                    @if (item.BidStatus == EnumTypes.BidRequestStatus.InProgress.ToString())
+                    {
+                        <input type="button" class="btn btn-danger" value="Cancel Bid" onclick="SweetConfirmCancel(@item.Id, 'Cancel', 'CancelBid')" />
+                    }
+                    @if (item.BidStatus == EnumTypes.BidRequestStatus.Approved.ToString())
+                    {
+                        <input type="button" class="btn btn-danger" value="Delete" onclick="SweetConfirmAuction('delete record' ,'This will remove this record from list' , 'Dashboard','DeleteBidSent', '@item.Id')" />
+                    }
+                </td>
+            </tr>
+            }
+            @{ 
+                var total = Model.Where(x => x.BidStatus == EnumTypes.BidRequestStatus.InProgress.ToString()).Sum(x => x.BidCoins);
+            }
+            @if (total > 0)
+            {
+                <tr  class="border-dark">
+                    <td colspan="7" class="text-right"><strong>Total In Progress </strong></td>
+                    <td colspan="3" class="text-left"><strong>@total Coins</strong></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <br/>
+    <input type="button" class="btn btn-primary" value="Back" onclick="window.location='@Url.Action("Dashboard", "Dashboard")'" />
+</div>

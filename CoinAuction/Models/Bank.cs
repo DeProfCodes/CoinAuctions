@@ -15,12 +15,12 @@ namespace CoinAuction.Models
         public string BankName { get; set; }
         
         [Required]
-        public int BranchCode { get; set; }
+        public string BranchCode { get; set; }
 
         [Required]
         public string AccountType { get; set; }
         
         [Required]
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
     }
 }

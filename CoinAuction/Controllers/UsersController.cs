@@ -9,6 +9,7 @@ using CoinAuction.Data;
 using CoinAuction.Models;
 using CoinAuction.ViewModels;
 using Microsoft.AspNetCore.Http;
+using CoinAuction.Helpers;
 
 namespace CoinAuction.Controllers
 {
@@ -16,28 +17,31 @@ namespace CoinAuction.Controllers
     {
         private readonly CoinAuctionContext _context;
 
-        public UsersController(CoinAuctionContext context)
+        public UsersController()
         {
-            _context = context;
+            _context = new CoinAuctionContext();
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
+            ViewData["role"] = HttpContext.Session.GetString("role");
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
+
+            var users = from u in _context.Users select u;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(s => s.Username.Contains(searchString));
+            }
+
             var usersVM = new UserViewModel
             {
-                Users = await _context.Users.ToListAsync(),
+                Users = await users.ToListAsync(),
                 Banks = await _context.Banks.ToListAsync(),
                 Wallets = await _context.Wallets.ToListAsync()
             };
 
-            var auctionVM = new AuctionViewModel
-            {
-                UserVM = usersVM,
-                Auctions = await _context.Auctions.ToListAsync()
-            };
-
-            return View(auctionVM);
+            return View(usersVM);
         }
 
         // GET: Users/Details/5
@@ -103,13 +107,31 @@ namespace CoinAuction.Controllers
                     }
                     else
                     {
-                        TempData["LoggedInUserId"] = user.UserId;
+                        var role = user.IsAdmin ? EnumTypes.Role.Admin.ToString() : EnumTypes.Role.User.ToString(); 
                         HttpContext.Session.SetString("userId", user.UserId.ToString());
-                        return RedirectToAction("Dashboard", "Dashboard");
+                        HttpContext.Session.SetString("role", role);
+                        ViewData["userId"] = user.UserId.ToString();
+                        ViewData["role"] = role;
+
+                        if(role == EnumTypes.Role.User.ToString())
+                            return RedirectToAction("Dashboard", "Dashboard");
+                        
+                        if(role == EnumTypes.Role.Admin.ToString())
+                            return RedirectToAction("Admin", "Dashboard");
                     }
                 }
             }
             return View(login);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.SetString("userId", "");
+            HttpContext.Session.SetString("role", "");
+            ViewData["userId"] = null;
+            ViewData["role"] = null;
+
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Users/Create
@@ -127,6 +149,20 @@ namespace CoinAuction.Controllers
         {
             if (ModelState.IsValid)
             {
+                var loadByUsername = await _context.Users.FirstOrDefaultAsync(u => u.Username == userVM.User.Username);
+                if(loadByUsername != null)
+                {
+                    userVM.UsernameError = "This username already exist!";
+                    return View(userVM);
+                }
+
+                var loadByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == userVM.User.Email);
+                if(loadByEmail != null)
+                {
+                    userVM.EmailError = "This email already exist!";
+                    return View(userVM);
+                }
+
                 _context.Users.Add(userVM.User);
                 await _context.SaveChangesAsync();
 
@@ -139,7 +175,7 @@ namespace CoinAuction.Controllers
                 _context.Wallets.Add(wallet);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Dashboard", "Dashboard");
             }
             return View();
         }
@@ -210,7 +246,7 @@ namespace CoinAuction.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete2(int? id)
         {
             if (id == null)
             {
@@ -236,15 +272,12 @@ namespace CoinAuction.Controllers
             return View(usersVM);
         }
 
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var user = await _context.Users.FindAsync(id);
             var bank = await _context.Banks.FirstOrDefaultAsync(b => b.UserId == id);
             var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == id);
-
+            
             _context.Users.Remove(user);
             _context.Banks.Remove(bank);
             _context.Wallets.Remove(wallet);

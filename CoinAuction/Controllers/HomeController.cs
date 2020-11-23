@@ -19,33 +19,25 @@ namespace CoinAuction.Controllers
         private readonly CoinAuctionContext _context;
         private readonly IScheduler _scheduler;
 
-        public HomeController(ILogger<HomeController> logger, CoinAuctionContext context, IScheduler scheduler)
+        private bool auctionTimerStarted = false;
+        public HomeController(ILogger<HomeController> logger, IScheduler scheduler)
         {
             _logger = logger;
-            _context = context;
+            _context = new CoinAuctionContext();
             _scheduler = scheduler;
         }
 
         public IActionResult Index()
         {
-            CheckAvailability();
+            ViewData["role"] = HttpContext.Session.GetString("role");
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
+
+            if (!auctionTimerStarted)
+            {
+                StartAuctionTimer();
+                auctionTimerStarted = true;
+            }
             return View();
-        }
-
-        public void CheckAvailability()
-        {
-            ITrigger trigger = TriggerBuilder.Create()
-             .WithIdentity($"Check Availability-{DateTime.Now}")
-             .StartNow()
-             .WithPriority(1)
-             .WithSimpleSchedule(x => x.WithIntervalInSeconds(1000).RepeatForever())
-             .Build();
-
-            IJobDetail job = JobBuilder.Create<MyJob>()
-                         .WithIdentity("Some Unique ID")
-                         .Build();
-
-            _scheduler.ScheduleJob(job, trigger);
         }
 
         public IActionResult Privacy()
@@ -53,6 +45,11 @@ namespace CoinAuction.Controllers
             return View();
         }
 
+        private void StartAuctionTimer()
+        {
+            AuctionsTask auction = new AuctionsTask(_scheduler);
+            auction.RunAuctionJobs();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
