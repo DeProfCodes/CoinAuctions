@@ -11,15 +11,12 @@
     <input type="button" class="btn btn-primary" value="Create new user" onclick="window.location='@Url.Action("Create", "Users")'" />
     <br />
     <br />
-    @*<form asp-controller="Users" asp-action="Index" method="get">
+    <form asp-controller="Users" asp-action="Index" method="get">
             <p>
-                <div class="form-group">
-                    Username: <input type="text" asp-for="FilterString" class="form-control text-dark border-dark" style="background-color:white; width:15%">
-                    <input type="button" class="btn btn-success" value=" Filter " onclick="window.location='@Url.Action("Index", "Users", new { SearchString = Model.FilterString})'" />
-                </div>
-            </p>
-        </form>*@
-    <br />
+                    Username: <input type="text" name="searchString" class="form-control text-dark border-dark" style="background-color:white; width:20%">
+                    <input type="submit" class="btn btn-sm" value="Search" style="background-color:green; width:15%"/>
+             </p>
+    </form>
     <table class="table">
         <thead>
             <tr>

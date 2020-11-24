@@ -23,6 +23,7 @@ namespace CoinAuction.Controllers
         }
 
         // GET: Users
+        [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
             ViewData["role"] = HttpContext.Session.GetString("role");
