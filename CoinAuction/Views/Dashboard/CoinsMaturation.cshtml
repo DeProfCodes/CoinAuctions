@@ -2,7 +2,7 @@
 @using CoinAuction.Helpers;
 
 @{
-    ViewData["Title"] = "CoinsMaturation";
+    ViewData["Title"] = "Coins Maturation";
 }
 
 <div class="col-md-8 offset-2">
@@ -55,10 +55,10 @@
                         <p class="@EnumTypes.GetBackgroundColorStatus(item.MaturityStatus)">@Html.DisplayFor(modelItem => item.MaturityStatus)</p>
                     </td>
                     <td>
-                        @if (item.MaturityStatus == EnumTypes.CoinsMaturityStatus.Matured.ToString())
+                        @*@if (item.MaturityStatus == EnumTypes.CoinsMaturityStatus.Matured.ToString())
                         {
                             <input type="button" class="btn btn-danger" value="Delete" onclick="SweetConfirmAuction('delete record' ,'This will remove this record from list' , 'Dashboard','DeleteCoinMaturation', '@item.Id')" />
-                        }
+                        }*@
                     </td>
                 </tr>
             }

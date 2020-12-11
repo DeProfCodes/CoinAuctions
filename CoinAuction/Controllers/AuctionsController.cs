@@ -17,22 +17,20 @@ namespace CoinAuction.Controllers
     public class AuctionsController : Controller
     {
         private readonly CoinAuctionContext _context;
-
+        
         public AuctionsController()
         {
             _context = new CoinAuctionContext();
-        }
-
-        void SetSessionValues()
-        {
-            ViewData["role"] = HttpContext.Session.GetString("role");
-            ViewData["userId"] = HttpContext.Session.GetString("userId");
         }
 
         // GET: Auctions
         public async Task<IActionResult> Index()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             return View(await _context.Auctions.ToListAsync());
         }
 
@@ -57,6 +55,10 @@ namespace CoinAuction.Controllers
         public IActionResult Create()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             Auction newAuc = new Auction 
             {
                 StartTime = DateTime.Now.AddHours(1),
@@ -75,6 +77,10 @@ namespace CoinAuction.Controllers
         public async Task<IActionResult> Create(AuctionPostViewModel auctionVM)
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             if (ModelState.IsValid)
             {
                 DateTime start = Convert.ToDateTime(auctionVM.Auction.StartTime);
@@ -100,6 +106,7 @@ namespace CoinAuction.Controllers
                     return View(auctionVM);
                 }
                 auctionVM.Auction.Status = EnumTypes.AuctionStatus.Pending.ToString();
+                auctionVM.Auction.IsManualScheduled = true;
                 _context.Add(auctionVM.Auction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -111,6 +118,10 @@ namespace CoinAuction.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -132,6 +143,10 @@ namespace CoinAuction.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,TotalPoolCoins,TotalSoldCoins, Status")] Auction auction)
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             if (id != auction.Id)
             {
                 return NotFound();
@@ -164,6 +179,10 @@ namespace CoinAuction.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -212,12 +231,15 @@ namespace CoinAuction.Controllers
 
         public  async Task<IActionResult> StartAuctionNow()
         {
-            var activeAuction = await _context.Auctions.FirstOrDefaultAsync(x => x.Status == EnumTypes.AuctionStatus.Active.ToString());
-            
-            if (activeAuction != null)
-                await StopAuction(activeAuction.Id);
+            var activeAuction = await _context.Auctions.FirstOrDefaultAsync(x => x.Status == EnumTypes.AuctionStatus.Active.ToString() || x.Status == EnumTypes.AuctionStatus.Active.ToString());
 
-            new AuctionExecution().Run();
+            if (activeAuction != null)
+            {
+                await StopAuction(activeAuction.Id);
+            }
+
+            new AuctionExecution().CreateFirstAuction(true);
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -227,6 +249,22 @@ namespace CoinAuction.Controllers
             _context.Auctions.Remove(auction);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public void SetSessionValues()
+        {
+            ViewData["role"] = HttpContext.Session.GetString("role");
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
+        }
+
+        public bool IsLoggedOut()
+        {
+            return (string.IsNullOrEmpty(HttpContext.Session.GetString("userId")));
+        }
+
+        public IActionResult LogOut()
+        {
+            return RedirectToAction("Login", "Users");
         }
     }
 }

@@ -51,10 +51,10 @@ namespace CoinAuction.Tasks
         public void RunContinuosJobs()
         {
             ITrigger trigger = TriggerBuilder.Create()
-             .WithIdentity($"Check Availability-{DateTime.Now}")
+             .WithIdentity($"AuctionCheck-{DateTime.Now}")
              .StartNow()
              .WithPriority(1)
-             .WithSimpleSchedule(x => x.WithIntervalInSeconds(500).RepeatForever())
+             .WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())
              .Build();
 
             IJobDetail job = JobBuilder.Create<AuctionsJob>()

@@ -12,7 +12,7 @@ namespace CoinAuction.Models
         public DateTime EndTime { get; set; }
         public int TotalPoolCoins { get; set; }
         public int TotalSoldCoins { get; set; }
-
         public string Status { get; set; }
+        public bool IsManualScheduled { get; set; }
     }
 }

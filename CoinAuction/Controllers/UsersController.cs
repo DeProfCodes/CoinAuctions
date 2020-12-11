@@ -16,19 +16,23 @@ namespace CoinAuction.Controllers
     public class UsersController : Controller
     {
         private readonly CoinAuctionContext _context;
-
+       
         public UsersController()
         {
             _context = new CoinAuctionContext();
+           
         }
 
+        
         // GET: Users
         [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
-            ViewData["role"] = HttpContext.Session.GetString("role");
-            ViewData["userId"] = HttpContext.Session.GetString("userId");
-
+            SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return Logout();
+            }
             var users = from u in _context.Users select u;
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -125,7 +129,7 @@ namespace CoinAuction.Controllers
             return View(login);
         }
 
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             HttpContext.Session.SetString("userId", "");
             HttpContext.Session.SetString("role", "");
@@ -138,6 +142,7 @@ namespace CoinAuction.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
+            SetSessionValues();
             return View();
         }
 
@@ -148,6 +153,8 @@ namespace CoinAuction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserViewModel userVM)
         {
+            SetSessionValues();
+            
             if (ModelState.IsValid)
             {
                 var loadByUsername = await _context.Users.FirstOrDefaultAsync(u => u.Username == userVM.User.Username);
@@ -178,8 +185,7 @@ namespace CoinAuction.Controllers
 
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Username == userVM.User.Username);
 
-                HttpContext.Session.SetString("userId", user.UserId.ToString());
-                HttpContext.Session.SetString("role", user.IsAdmin ? EnumTypes.Role.Admin.ToString() : EnumTypes.Role.User.ToString());
+                
 
                 userVM.Bank.UserId = user.UserId;
                 Wallet wallet = new Wallet { UserId = user.UserId, TotalCoins = 0 };
@@ -188,7 +194,17 @@ namespace CoinAuction.Controllers
                 _context.Wallets.Add(wallet);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Dashboard", "Dashboard");
+                if (string.IsNullOrEmpty((string)ViewData["role"]))
+                {
+                    HttpContext.Session.SetString("userId", user.UserId.ToString());
+                    HttpContext.Session.SetString("role", user.IsAdmin ? EnumTypes.Role.Admin.ToString() : EnumTypes.Role.User.ToString());
+
+                    return RedirectToAction("Dashboard", "Dashboard");
+                }
+                else if((string)ViewData["role"] == EnumTypes.Role.Admin.ToString())
+                {
+                    return RedirectToAction("Index", "Users");
+                }
             }
             return View();
         }
@@ -196,6 +212,11 @@ namespace CoinAuction.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return Logout();
+            }
             if (id == null)
             {
                 return NotFound();
@@ -227,6 +248,11 @@ namespace CoinAuction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UserViewModel userVM)
         {
+            SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return Logout();
+            }
             if (id != userVM.User.UserId)
             {
                 return NotFound();
@@ -303,5 +329,17 @@ namespace CoinAuction.Controllers
         {
             return _context.Users.Any(e => e.UserId == id);
         }
+
+        public void SetSessionValues()
+        {
+            ViewData["role"] = HttpContext.Session.GetString("role");
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
+        }
+
+        public bool IsLoggedOut()
+        {
+            return (string.IsNullOrEmpty(HttpContext.Session.GetString("userId")));
+        }
+
     }
 }

@@ -21,26 +21,32 @@ namespace CoinAuction.Tasks
             var auction = _context.Auctions.OrderByDescending(x => x.Id).FirstOrDefault();
             if (auction != null)
             {
+                var hour = DateTime.Now.Hour;
                 if (auction.Status == EnumTypes.AuctionStatus.Pending.ToString())
                 {
-                    if(DateTime.Now.Hour == 9 || DateTime.Now.Hour == 17)
+                    if((auction.IsManualScheduled && auction.StartTime.Hour==hour) || hour == 9 || hour == 17)
                         ActivateAuction(auction);
                 }
                 else if (auction.Status == EnumTypes.AuctionStatus.Active.ToString())
                 {
-                    if (DateTime.Now.Hour == 10 || DateTime.Now.Hour == 18)
+                    if ((auction.IsManualScheduled && auction.EndTime.Hour == hour) || hour == 10 || hour == 18)
                         TerminateAuction(auction);
                 }
-                else if(auction.Status == EnumTypes.AuctionStatus.Stopped.ToString())
+                else if(auction.Status == EnumTypes.AuctionStatus.Stopped.ToString() || auction.Status == EnumTypes.AuctionStatus.Completed.ToString())
                 {
-                    AddNewAuction();
+                    if (hour == 9 || hour == 17)
+                    {
+                        CreateFirstAuction();
+                    }
                 }
-                await _context.SaveChangesAsync();
             }
             else
             {
-                await StartAuction();
+                var now = DateTime.Now.Hour;
+                if (now == 9 || now == 17)
+                    await StartAuction();
             }
+            await _context.SaveChangesAsync();
         }
 
         public async Task StartAuction()
@@ -55,19 +61,23 @@ namespace CoinAuction.Tasks
             }
         }
 
-        void CreateFirstAuction()
+        public void CreateFirstAuction(bool external=false)
         {
             DateTime now = DateTime.Now;
-            
+
             Auction auction = new Auction
             {
                 StartTime = now,
                 EndTime = now.AddHours(1),
                 TotalPoolCoins = GetPoolCoins(),
                 TotalSoldCoins = 0,
-                Status = EnumTypes.AuctionStatus.Active.ToString()
+                Status = EnumTypes.AuctionStatus.Active.ToString(),
+                IsManualScheduled = false
             };
             _context.Add(auction);
+
+            if (external)
+                _context.SaveChangesAsync();
         }
 
         void TerminateAuction(Auction auction)
@@ -77,7 +87,8 @@ namespace CoinAuction.Tasks
 
             _context.Update(auction);
 
-            AddNewAuction();
+            if(!auction.IsManualScheduled)
+                AddNewAuction();
         }
 
         public void ActivateAuction(Auction auction)
@@ -102,15 +113,17 @@ namespace CoinAuction.Tasks
         void AddNewAuction()
         {
             DateTime now = DateTime.Now;
-            bool morningSession = now.Hour == 9;
+
+            bool morningSession = now.Hour < 11;
 
             Auction auction = new Auction
             {
-                StartTime = morningSession ? now : now.AddHours(8),
-                EndTime = morningSession ? now.AddHours(1) : now.AddHours(9),
+                StartTime = morningSession ? now.AddHours(7) : now.AddHours(15),
+                EndTime = morningSession ? now.AddHours(8) : now.AddHours(16),
                 TotalPoolCoins = GetPoolCoins(),
                 TotalSoldCoins = 0,
-                Status = EnumTypes.AuctionStatus.Pending.ToString()
+                Status = EnumTypes.AuctionStatus.Pending.ToString(),
+                IsManualScheduled = false
             };
             _context.Add(auction);
         }

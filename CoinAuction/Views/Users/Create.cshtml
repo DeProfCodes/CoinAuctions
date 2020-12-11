@@ -1,83 +1,105 @@
 ﻿@model CoinAuction.ViewModels.UserViewModel
+@using CoinAuction.Helpers;
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registration";
+
+    bool LoggedIn = ViewData["userId"] != null && (string)ViewData["userId"] != "";
+    bool isAdmin = false;
+
+    if (LoggedIn)
+    {
+        if (ViewData["role"] != null && (string)ViewData["role"] == EnumTypes.Role.Admin.ToString())
+            isAdmin = true;
+    }
 }
 
 <div class="main-w3layouts wrapper">
     <h1 class="registerHeading">Gold Coin Register</h1>
     <div class="main-agileinfo">
         <div class="agileits-top">
-                <form asp-action="Create" onsubmit="return PasswordsMisMatch()">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form asp-action="Create" onsubmit="return PasswordsMisMatch()">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (isAdmin)
+                {
                     <div class="form-group">
-                        <input type="text" asp-for="User.Username" placeholder="Username" class="text" required="" />
-                        <span asp-validation-for="User.Username" class="text-warning"></span>
-                        @if (Model != null && Model.UsernameError != null)
-                        {
-                            <span class="text-warning">@Model.UsernameError</span>
-                        }
+                        <label>User Type</label>
+                        <select class="form-control" asp-for="User.IsAdmin" style="width: 95%">
+                            <option value=false>@EnumTypes.Role.User.ToString()</option>
+                            <option value=true>@EnumTypes.Role.Admin.ToString()</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="User.Firstname" placeholder="Firstname" class="text" required=""/>
-                        <span asp-validation-for="User.Firstname" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="User.Lastname" placeholder="Lastname" class="text" required=""/>
-                        <span asp-validation-for="User.Lastname" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="User.Email" placeholder="Email" class="text" required="" />
-                        <span asp-validation-for="User.Email" class="text-warning"></span>
-                        @if (Model != null && Model.EmailError != null)
-                        {
-                            <span class="text-warning">@Model.EmailError</span>
-                        }
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="User.Cellphone" placeholder="Cellphone" class="text" required=""/>
-                        <span asp-validation-for="User.Cellphone" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="Bank.BankName" placeholder="Bank Name" class="text" required=""/>
-                        <span asp-validation-for="Bank.BankName" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="Bank.AccountType" placeholder="Bank Type" class="text" required=""/>
-                        <span asp-validation-for="Bank.AccountType" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="Bank.BranchCode" placeholder="Branch Code" class="text" required=""/>
-                        <span asp-validation-for="Bank.BranchCode" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" asp-for="Bank.AccountNumber" placeholder="Account Number" class="text" required=""/>
-                        <span asp-validation-for="Bank.AccountNumber" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" asp-for="User.Password" placeholder="Passowrd" class="text" required="" id="password"/>
-                        <span asp-validation-for="User.Password" class="text-warning"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" asp-for="User.Password" placeholder="ConfirmPassowrd" class="text" required="" id="confpass"/>
-                        <span id="confirmPassword" class="text-warning"></span>
-                    </div>
+                }
+                <div class="form-group">
+                    <input type="text" asp-for="User.Username" placeholder="Username" class="text" required="" />
+                    <span asp-validation-for="User.Username" class="text-warning"></span>
+                    @if (Model != null && Model.UsernameError != null)
+                    {
+                        <span class="text-warning">@Model.UsernameError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="User.Firstname" placeholder="Firstname" class="text" required="" />
+                    <span asp-validation-for="User.Firstname" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="User.Lastname" placeholder="Lastname" class="text" required="" />
+                    <span asp-validation-for="User.Lastname" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="User.Email" placeholder="Email" class="text" required="" />
+                    <span asp-validation-for="User.Email" class="text-warning"></span>
+                    @if (Model != null && Model.EmailError != null)
+                    {
+                        <span class="text-warning">@Model.EmailError</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="User.Cellphone" placeholder="Cellphone" class="text" required="" />
+                    <span asp-validation-for="User.Cellphone" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="Bank.BankName" placeholder="Bank Name" class="text" required="" />
+                    <span asp-validation-for="Bank.BankName" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="Bank.AccountType" placeholder="Bank Type" class="text" required="" />
+                    <span asp-validation-for="Bank.AccountType" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="Bank.BranchCode" placeholder="Branch Code" class="text" required="" />
+                    <span asp-validation-for="Bank.BranchCode" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="Bank.AccountNumber" placeholder="Account Number" class="text" required="" />
+                    <span asp-validation-for="Bank.AccountNumber" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="password" asp-for="User.Password" placeholder="Password" class="text" required="" id="password" />
+                    <span asp-validation-for="User.Password" class="text-warning"></span>
+                </div>
+                <div class="form-group">
+                    <input type="password" asp-for="User.Password" placeholder="Confirm Passowrd" class="text" required="" id="confpass" />
+                    <span id="confirmPassword" class="text-warning"></span>
+                </div>
 
-                    <div class="wthree-text">
-                        <label class="anim">
-                            <input type="checkbox" class="checkbox" required>
-                            <span>I Agree To The Terms & Conditions</span>
-                        </label>
-                        <div class="clear"> </div>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="submit" value="Sign Up" class="btn btn-primary" />
-                    </div>
-                </form>
-                <p>Already have an Account? <a asp-controller="Users" asp-action="Login">Login Now</a></p>
-            </div>
+                <div class="wthree-text">
+                    <label class="anim">
+                        <input type="checkbox" class="checkbox" required>
+                        <span>I Agree To The Terms & Conditions</span>
+                    </label>
+                    <div class="clear"> </div>
+                </div>
+                @{
+                    var buttonName = isAdmin ? "Create new user" : "Sign Up";
+                }
+                <div class="form-group">
+                    <input type="submit" value="@buttonName" class="btn btn-primary" />
+                </div>
+            </form>
+            <p>Already have an Account? <a asp-controller="Users" asp-action="Login">Login Now</a></p>
         </div>
+    </div>
 
     <div>
         <a asp-action="Index">Back to List</a>

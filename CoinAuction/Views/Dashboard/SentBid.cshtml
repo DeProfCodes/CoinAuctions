@@ -84,10 +84,10 @@
                     {
                         <input type="button" class="btn btn-danger" value="Cancel Bid" onclick="SweetConfirmCancel(@item.Id, 'Cancel', 'CancelBid')" />
                     }
-                    @if (item.BidStatus == EnumTypes.BidRequestStatus.Approved.ToString())
+                    @*@if (item.BidStatus == EnumTypes.BidRequestStatus.Approved.ToString())
                     {
                         <input type="button" class="btn btn-danger" value="Delete" onclick="SweetConfirmAuction('delete record' ,'This will remove this record from list' , 'Dashboard','DeleteBidSent', '@item.Id')" />
-                    }
+                    }*@
                 </td>
             </tr>
             }

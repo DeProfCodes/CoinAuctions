@@ -9,6 +9,7 @@ using CoinAuction.Tasks;
 using CoinAuction.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -17,38 +18,50 @@ namespace CoinAuction.Controllers
     public class DashboardController : Controller
     {
         private readonly CoinAuctionContext _context;
-
         public DashboardController()
         {
             _context = new CoinAuctionContext();
         }
 
-        void SetSessionValues()
-        {
-            ViewData["role"] = HttpContext.Session.GetString("role");
-            ViewData["userId"] = HttpContext.Session.GetString("userId");
-        }
 
-        private async Task<List<UserViewModel>> GetAuctionAccounts()
+        /*
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            //Log the error!!
+            //_Logger.Error(filterContext.Exception);
+
+            //Redirect or return a view, but not both.
+            //filterContext.Result = RedirectToAction("Index", "ErrorHandler");
+            // OR 
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }*/
+
+        private List<UserViewModel> GetAuctionAccounts()
         {
             List<UserViewModel> accounts = new List<UserViewModel>();
             var userId = HttpContext.Session.GetString("userId");
-            var users = _context.Users.Where(u => u.UserId.ToString() != userId);
-            var wallets = _context.Wallets.Where(u => u.UserId.ToString() != userId);
-            var banks = _context.Banks.Where(u => u.UserId.ToString() != userId);
+            var users =   _context.Users.Where(u => u.UserId.ToString() != userId);
+            var wallets = _context.Wallets.ToList();
+            var banks = _context.Banks.ToList();
+            var bidReqs = _context.BidsRequest.ToList();
 
             foreach (var usr in users)
             {
-                var wlt = await wallets.FirstOrDefaultAsync(u => u.UserId == usr.UserId && u.TotalCoins > 0);
+                var wlt = wallets.Where(u => u.UserId == usr.UserId && u.TotalCoins > 0).FirstOrDefault();
                 if (wlt != null)
                 {
-                    var bidReq = _context.BidsRequest.Where(s => s.UserId == usr.UserId && s.BidStatus == EnumTypes.BidRequestStatus.InProgress.ToString());
+                    var bidReq = bidReqs.Where(s => s.UserId == usr.UserId && s.BidStatus == EnumTypes.BidRequestStatus.InProgress.ToString());
                     var bidReqCoins = bidReq.Sum(x => x.BidCoins);
                     var userVM = new UserViewModel
                     {
                         User = usr,
                         Wallet = wlt,
-                        Bank = banks.FirstOrDefault(b => b.UserId == usr.UserId),
+                        Bank = banks.Where(b => b.UserId == usr.UserId).FirstOrDefault(),
                         TotalCoinsInAuction = bidReq != null ? bidReqCoins : 0
                     };
                     accounts.Add(userVM);
@@ -60,7 +73,7 @@ namespace CoinAuction.Controllers
         private async Task<AuctionViewModel> GetMainViewModel()
         {
             var userId = HttpContext.Session.GetString("userId");
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId.ToString() == userId);
+            var user = await _context.Users.Where(u => u.UserId.ToString() == userId).FirstOrDefaultAsync();
             var auction = await _context.Auctions.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
             var coins = _context.Coins.Where(c => c.UserId.ToString() == userId);
 
@@ -80,15 +93,15 @@ namespace CoinAuction.Controllers
             userVM = new UserViewModel
             {
                 User = user,
-                Bank = await _context.Banks.FirstOrDefaultAsync(b => b.UserId == user.UserId),
-                Wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == user.UserId),
+                Bank = await _context.Banks.Where(b => b.UserId == user.UserId).FirstOrDefaultAsync(),
+                Wallet = await _context.Wallets.Where(w => w.UserId == user.UserId).FirstOrDefaultAsync(),
                 NextAuctionTime = auctionStartTime,
-                PendingCoins = coins.ToList(),
+                PendingCoins = coins!=null ? coins.ToList() : new List<Coins>(),
                 TotalPendingCoins = totalPendingCoins
             };
 
-            bool activeAuction = await _context.Auctions.OrderByDescending(x => x.Id).AnyAsync(x => x.Status == EnumTypes.AuctionStatus.Active.ToString());
-            var auctionAccs = activeAuction ? await GetAuctionAccounts() : new List<UserViewModel>();
+            bool activeAuction = auction != null ? auction.Status == EnumTypes.AuctionStatus.Active.ToString() : false;
+            var auctionAccs = activeAuction ? GetAuctionAccounts() : new List<UserViewModel>();
             var auctionCoins = auctionAccs.Sum(v => v.Wallet.TotalCoins);
             var bidders = auctionAccs.ConvertAll(x => new BidSent { UserId = x.User.UserId });
 
@@ -106,12 +119,22 @@ namespace CoinAuction.Controllers
         public async Task<IActionResult> Dashboard()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
+
             return View(await GetMainViewModel());
         }
 
         public IActionResult CoinsMaturation()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
+
             var userId = HttpContext.Session.GetString("userId");
             var coins = _context.Coins.Where(c => c.UserId.ToString() == userId);
             return View(coins);
@@ -120,27 +143,43 @@ namespace CoinAuction.Controllers
         public async Task<IActionResult> CoinsMaturationAdmin()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             return View(await _context.Coins.ToListAsync());
         }
 
         public IActionResult BidRequests()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             var userId = HttpContext.Session.GetString("userId");
-            var openBids = _context.BidsRequest.Where(b => b.UserId.ToString() == userId);
+            var openBids = _context.BidsRequest.OrderByDescending(x => x.Id).Where(b => b.UserId.ToString() == userId);
             return View(openBids);
         }
 
         public async Task<IActionResult> BidRequestsAdmin()
         {
             SetSessionValues();
-            return View(await _context.BidsRequest.ToListAsync());
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
+            return View(await _context.BidsRequest.OrderByDescending(x => x.Id).ToListAsync());
         }
         public IActionResult SentBid()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             var userId = HttpContext.Session.GetString("userId");
-            var openBids = _context.BidsSent.Where(b => b.RequestUsersId.ToString() == userId);
+            var openBids = _context.BidsSent.OrderByDescending(x => x.Id).Where(b => b.RequestUsersId.ToString() == userId);
             return View(openBids);
         }
 
@@ -174,7 +213,7 @@ namespace CoinAuction.Controllers
                 await _context.SaveChangesAsync();
                 transaction.Commit();
             }
-            catch (Exception ex)
+            catch
             {
                 transaction.Rollback();
             }
@@ -197,7 +236,7 @@ namespace CoinAuction.Controllers
                 await _context.SaveChangesAsync();
                 transaction.Commit();
             }
-            catch (Exception ex)
+            catch
             {
                 transaction.Rollback();
             }
@@ -220,7 +259,7 @@ namespace CoinAuction.Controllers
                 await _context.SaveChangesAsync();
                 transaction.Commit();
             }
-            catch (Exception ex)
+            catch
             {
                 transaction.Rollback();
             }
@@ -266,7 +305,7 @@ namespace CoinAuction.Controllers
                 await _context.SaveChangesAsync();
                 transaction.Commit();
             }
-            catch (Exception ex)
+            catch
             {
                 transaction.Rollback();
             }
@@ -338,10 +377,30 @@ namespace CoinAuction.Controllers
             return RedirectToAction(nameof(BidRequests));
         }
 
-        public async Task<IActionResult> Admin()
+        public IActionResult Admin()
         {
             SetSessionValues();
+            if (IsLoggedOut())
+            {
+                return LogOut();
+            }
             return View();
+        }
+
+        public void SetSessionValues()
+        {
+            ViewData["role"] = HttpContext.Session.GetString("role");
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
+        }
+
+        public bool IsLoggedOut()
+        {
+            return (string.IsNullOrEmpty(HttpContext.Session.GetString("userId")));
+        }
+
+        public IActionResult LogOut()
+        {
+            return RedirectToAction("Login", "Users");
         }
     }
 }

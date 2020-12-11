@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "HttpStatusCodeHandler";
+}
+
+@{
+    ViewBag.Title = "Not Found";
+}
+
+<div class="col-md-8 offset-2">
+    <h4>@ViewBag.ErrorMessage</h4>
+
+    <a asp-action="index" asp-controller="home">
+        Click here to navigate to the home page
+    </a>
+</div>

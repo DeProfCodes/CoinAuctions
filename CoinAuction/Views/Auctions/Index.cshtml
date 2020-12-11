@@ -57,15 +57,15 @@
                     <td>
                         @if (item.Status == EnumTypes.AuctionStatus.Active.ToString())
                         {
-                            <input type="button" class="btn btn-danger" value="Stop Auction" onclick="SweetConfirmAuction('Stop Auction' ,'@stopAuctionMsg' , 'Auctions','StopAuction', '@item.Id')" />
+                            <input type="button" class="btn btn-danger" value="Stop" onclick="SweetConfirmAuction('Stop Auction' ,'@stopAuctionMsg' , 'Auctions','StopAuction', '@item.Id')" />
                         }
                         else if (item.Status == EnumTypes.AuctionStatus.Pending.ToString())
                         {
-                            <input type="button" class="btn btn-success" value="Start Now" onclick="SweetConfirmAuction('Start Auction' ,'@startAuctionMsg' , 'Auctions', 'StartAuction', '@item.Id')" />
+                            <input type="button" class="btn btn-success" value="Start" onclick="SweetConfirmAuction('Start Auction' ,'@startAuctionMsg' , 'Auctions', 'StartAuction', '@item.Id')" />
                         }
                         else if (item.Status == EnumTypes.AuctionStatus.Completed.ToString() || item.Status == EnumTypes.AuctionStatus.Stopped.ToString())
                         {
-                            <input type="button" class="btn btn-secondary" value="Delete" onclick="SweetConfirmAuction(s'Delete Auction' ,'@deleteAuctionMsg', 'Auctions', 'DeleteAuction', '@item.Id')" />
+                            <input type="button" class="btn btn-secondary" value="Delete" onclick="SweetConfirmAuction('Delete Auction' ,'@deleteAuctionMsg', 'Auctions', 'DeleteAuction', '@item.Id')" />
                         }
                         @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                             <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

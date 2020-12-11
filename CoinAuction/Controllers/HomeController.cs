@@ -48,7 +48,7 @@ namespace CoinAuction.Controllers
         private void StartAuctionTimer()
         {
             AuctionsTask auction = new AuctionsTask(_scheduler);
-            auction.RunAuctionJobs();
+            auction.RunContinuosJobs();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
