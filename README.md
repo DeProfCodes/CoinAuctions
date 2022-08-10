@@ -11,7 +11,7 @@ straight to their bank account and then the selling user would approve the purch
 
 <br>
 
-#DEMO
+#DEMO <br>
 on login page, 3 dummy accounts are currently being created on your localDB: <br>
   admin user <> <br>
   username : admin <br>
