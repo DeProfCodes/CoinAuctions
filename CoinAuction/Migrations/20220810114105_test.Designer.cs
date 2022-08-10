@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoinAuction.Migrations
 {
     [DbContext(typeof(CoinAuctionContext))]
-    [Migration("20201201170356_add manual schedule field")]
-    partial class addmanualschedulefield
+    [Migration("20220810114105_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

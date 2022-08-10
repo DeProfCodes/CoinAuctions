@@ -2,22 +2,22 @@
 
 namespace CoinAuction.Migrations
 {
-    public partial class addmanualschedulefield : Migration
+    public partial class AddFieldInWallet : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsManualScheduled",
-                table: "Auctions",
+            migrationBuilder.AddColumn<int>(
+                name: "userId",
+                table: "Wallets",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsManualScheduled",
-                table: "Auctions");
+                name: "userId",
+                table: "Wallets");
         }
     }
 }

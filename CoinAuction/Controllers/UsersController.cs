@@ -169,6 +169,7 @@ namespace CoinAuction.Controllers
             bool dummiesInserted = await _context.Users.FirstOrDefaultAsync(u => u.Username == "dummy1") != null;
             if (!dummiesInserted)
             {
+                await CreateDummyUser(1);
                 await CreateDummyUser(2);
 
                 await DummyBids("dummy1@gmail.com");
