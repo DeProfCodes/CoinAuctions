@@ -3,14 +3,14 @@
 #DEMO
 on login page, 3 dummy accounts are currently being created on your localDB: <br>
   admin user <> username : admin <br>
-                password : admin
-  
-  dummy user1 <> username : dummy1
-                 password : dummy
-                 
-  dummy user2 <> username : dummy2
-                 password : dummy
-
+                password : admin <br>
+ <br>
+  dummy user1 <> username : dummy1 <br>
+                 password : dummy  <br>
+ <br>                
+  dummy user2 <> username : dummy2 <br>
+                 password : dummy   <br>
+ <br>
 Project Initiation
 
 
