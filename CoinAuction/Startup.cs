@@ -57,8 +57,8 @@ namespace CoinAuction
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 //var context = serviceScope.ServiceProvider.GetRequiredService<CoinAuctionContext>();
-                //var context = new CoinAuctionContext();
-                //context.Database.Migrate();
+                var context = new CoinAuctionContext();
+                context.Database.Migrate();
             }
 
             if (env.IsDevelopment())
