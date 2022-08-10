@@ -1,8 +1,8 @@
 # CoinAuctions
 
 #DEMO
-on login page, 3 dummy accounts are currently being created on your localDB:
-  admin user <> username : admin
+on login page, 3 dummy accounts are currently being created on your localDB: <br>
+  admin user <> username : admin <br>
                 password : admin
   
   dummy user1 <> username : dummy1
