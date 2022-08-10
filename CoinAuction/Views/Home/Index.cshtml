@@ -2,8 +2,6 @@
     ViewData["Title"] = "Home";
 }
 
-<!----------------
-banner------------>
 <div>
     <section id="banner">
         <div class="container text-center">
@@ -11,13 +9,12 @@ banner------------>
                 <div class="col-md-12">
                     <p class="heading-text"> Welcome to the auction </p>
                     <p class="body-text">Your trusted p2p coin community. Get 100% of the coins you have purchased from the members. This is a pure peer to peer network, Client's pay each other without their money going through the admin acounts.</p>
-                    <button type="button" class="btn btn-primary"> Bid now</button>
+                    <a type="button" class="btn btn-primary" asp-controller="Users" asp-action="Login"> Bid now</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!---------------stpes------------>
     <section id="steps">
         <div class="container">
             <div class=" row text-center">
